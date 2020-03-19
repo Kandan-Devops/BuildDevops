@@ -1,0 +1,11 @@
+---
+### Component - Linux Security Configuration ###
+- hosts: linux
+  become: yes
+  become_user: root
+  become_method: sudo
+  roles:
+     - { role: kernel_update, tags: ["kernel"] }
+     - { role: bigfix_linux, tags: ["bigfix"] }
+     - { role: linux, tags: ["saac_basic"] }
+     - { role: linux_ssh, tags: ["saac_ssh"] }

@@ -1,0 +1,59 @@
+---
+
+# Include variable file
+- name: Include  global version variables
+  include_vars: "group_vars/input_vars.yml"
+
+- name: Copying binaries from ansible machine to endpoint
+  copy: src={{ item.source }} dest={{ linux_binary_dest }} mode=0774 force=no
+  with_items:
+    - "{{ linux_binary }}"
+
+- name: Creates Installation directories
+  file:
+    path: "{{ item.directory }}"
+    state: directory
+    mode: "{{ installDirectoryMode }}"
+  with_items:
+     - "{{ installDirList }}"
+
+# copy_besclient_config
+- name: copy besclient_config
+  command: "{{ copy_besclient_config }}"
+  register: copy_besclient_config
+  tags: copy_besclient_config
+
+# Install BigFix Client
+- name: Install BigFix Cleint
+  command: "{{ installBigFix }}"
+  args:
+   warn: no
+  register: Install_BigFixClient
+  ignore_errors: True
+  tags: Install_BigFixClient
+
+# copy_actionsite_afxm
+- name: copy_actionsite_afxm
+  command: "{{ copy_actionsite_afxm }}"
+  register: copy_actionsite_afxm
+  tags: copy_actionsite_afxm
+
+- name: "set {{linux_binary_files.actionsite_afxm}} file permission"
+  file:
+     path: "{{ installDirectories.etcBESClient}}/{{linux_binary_files.actionsite_afxm}}"
+     mode: "{{ actionsiteafxmMode }}"
+
+# stop BigFix
+- name: top BigFix if already running
+  command: "{{ besclientService }} stop"
+  register: stopBigfix
+  ignore_errors: True
+  tags: stopBigFix
+
+
+# start BigFix Client if not started
+- name: start BigFix Client
+  command: "{{ besclientService }} start"
+  register: start_BigFix
+  ignore_errors: True
+  tags: startBigfix

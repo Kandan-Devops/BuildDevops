@@ -1,0 +1,453 @@
+#Flag variables for task execution confirmation
+# true to execute task , false to skip task
+SSH_CONFIGURE_PASSWORD_PARAM_ISRUN: true
+SSH_LOGGING_ISRUN: true
+SSH_NETWORK_CONF_ISRUN: true
+SSH_PROTECTING_RESOURCES_ISRUN: true
+
+
+#shd_config file path 
+SSH_CONFIG_FILE: /etc/ssh/sshd_config
+
+#SSH Logging
+# AV.1.2.1.2 and AV.1.2.1.3 - task4 and 5
+LogLevel: LogLevel INFO
+SetLogLevel: true
+
+# AV.1.2.2 task 7
+QuietMode: QuietMode no
+SetQuietMode: true
+
+# AV.1.2.4 - task 8
+logrotate_msg: rotate 13
+setlogrotate_msg: true 
+
+logrotate_format: weekly
+set_logrotate_format: true
+
+logrotate: /etc/logrotate.conf
+
+
+#.....................................Protecting Resource Variable for SSH Task ..........................................................................
+
+# AV.1.8.2.1 task 37
+binOpenSSl: /bin/openssl
+binOpenSSlMode: 0775
+setbinOpenSSlMode: true
+
+# AV.1.8.2.2 task 38
+binScp: /bin/scp
+binScpMode: 0775
+setbinScpMode: true
+
+# AV.1.8.2.3 task 39
+binScp2: /bin/scp2
+binScp2Mode: 0775
+setbinScp2Mode: true
+
+# AV.1.8.2.4 task 40
+binSftp: /bin/sftp
+binSftpMode: 0775
+setbinSftpMode: true
+
+# AV.1.8.2.5 task 41
+binSftp2: /bin/sftp2
+binSftp2Mode: 0775
+setbinSftp2Mode: true
+
+# AV.1.8.2.6 task 42
+binSftpServer: /bin/sftp-server
+binSftpServerMode: 0775
+setbinSftpServerMode: true
+
+
+# AV.1.8.2.7 task 43
+binSftpServer2: /bin/sftp-server2
+binSftpServer2Mode: 0775
+setbinSftpServer2Mode: true
+
+# AV.1.8.2.8 -task 44
+binSlogin: /bin/slogin
+binSloginMode: 0775
+setbinSloginMode: true
+
+# AV.1.8.2.9 - task 45
+binSsh: /bin/ssh
+binSshMode: 0775
+setbinSshMode: true
+
+# AV.1.8.2.10 -task 46
+binSsh2: /bin/ssh2
+binSsh2Mode: 0775
+setbinSsh2Mode: true
+
+# AV.1.8.2.11 task 47
+binSshAdd: /bin/ssh-add
+binSshAddMode: 0775
+setbinSshAddMode: true
+
+# AV.1.8.2.12 task 48
+binSshAdd2: /bin/ssh-add2
+binSshAdd2Mode: 0775
+setbinSshAdd2Mode: true
+
+# AV.1.8.2.13 task 49
+binSshAgent: bin/ssh-agent
+binSshAgentMode: 0775
+setbinSshAgentMode: true
+
+# AV.1.8.2.14 task 50
+binSshAgent2: /bin/ssh-agent2
+binSshAgent2Mode: 0775
+setbinSshAgent2Mode: true
+
+# AV.1.8.2.15 task 51
+binSshAskPass: /bin/ssh-askpass
+binSshAskPassMode: 0775
+setbinSshAskPassMode: true
+
+# AV.1.8.2.16 task 52
+binSshAskPass2: bin/ssh-askpass2
+binSshAskPass2Mode: 0775
+setbinSshAskPass2Mode: true
+
+# AV.1.8.2.17 task 53
+binSshCertenroll2: /bin/ssh-certenroll2
+binSshCertenroll2Mode: 0775
+setbinSshCertenroll2Mode: true
+
+# AV.1.8.2.18 task 54
+binSshChrootmgr: /bin/ssh-chrootmgr
+binSshChrootmgrMode: 0775
+setbinSshChrootmgrMode: true
+
+# AV.1.8.2.19 task 55
+binSshDummyShell: /bin/ssh-dummy-shell
+binSshDummyShellMode: 0775
+setbinSshDummyShellMode: true
+
+#AV.1.8.2.20 task 56
+binSshKeygen: /bin/ssh-keygen
+binSshKeygenMode: 0775
+setbinSshKeygenMode: true
+
+# AV.1.8.2.21 task 57
+binSshKeygen2: /bin/ssh-keygen2
+binSshKeygen2Mode: 0775
+setbinSshKeygen2Mode: true
+
+# AV.1.8.2.22 task 58
+binSshKeyscan: /bin/ssh-keyscan
+binSshKeyscanMode: 0775
+setbinSshKeyscanMode: true
+
+# AV.1.8.2.23 task 59
+binSshPamClient: /bin/ssh-pam-client
+binSshPamClientMode: 0775
+setbinSshPamClientMode: true
+
+#AV.1.8.2.24 task 60
+binSshProbe: /bin/ssh-probe
+binSshProbeMode: 0775
+setbinSshProbeMode: true
+
+# AV.1.8.2.25 task 61
+binSshProbe2: /bin/ssh-probe2
+binSshProbe2Mode: 0775
+setbinSshProbe2Mode: true
+
+# AV.1.8.2.26 task 62
+binSshPubkeymgr: /bin/ssh-pubkeymgr
+binSshPubkeymgrMode: 0775
+setbinSshPubkeymgrMode: true
+
+# AV.1.8.2.27 task 63
+binSshSinger: /bin/ssh-signer
+binSshSingerMode: 0775
+setbinSshSingerMode: true
+
+# AV.1.8.2.28 task 64
+binSshSinger2: /bin/ssh-signer2
+binSshSinger2Mode: 0775
+setbinSshSinger2Mode: true
+
+# AV.1.8.2.29 task 65
+libLibcryptoDotA: /lib/libcrypto.a
+libLibcryptoDotAMode: 0775
+setlibLibcryptoDotAMode: true
+
+#AV.1.8.2.30 -task 66
+libLibsshDotA: /lib/libssh.a
+libLibsshDotAMode: 0775
+setlibLibsshDotAMode: true
+
+#AV.1.8.2.31 -task 67
+libLibsslDotA: /lib/libssl.a
+libLibsslDotAMode: 0775
+setlibLibsslDotAMode: true
+
+#AV.1.8.2.32 -task 68
+libLibZDotA: /lib/libz.a
+libLibZDotAMode: 0775
+setlibLibZDotAMode: true
+
+#AV.1.8.2.33 - task 69
+libexecOpensshSftpserver: /lib-exec/openssh/sftp-server
+libexecOpensshSftpserverMode: 0775
+setlibexecOpensshSftpserverMode: true
+
+#AV.1.8.2.34 - task 70
+libexecOpensshSshkeysign: /lib-exec/openssh/ssh-keysign
+libexecOpensshSshkeysignMode: 0775
+setlibexecOpensshSshkeysignMode: true
+
+# AV.1.8.2.35 - task 71
+libexecOpensshSshaskpass: /lib-exec/openssh/ssh-askpass
+libexecOpensshSshaskpassMode: 0775
+setlibexecOpensshSshaskpassMode: true
+
+#AV.1.8.2.36 - task 72
+libexecSftpserver: /lib-exec/sftp-server
+libexecSftpserverMode: 0775
+setlibexecSftpserverMode: true
+
+#AV.1.8.2.37 - task 73
+libexecSshkeysign: /lib-exec/ssh-keysign
+libexecSshkeysignMode: 0775
+setlibexecSshkeysignMode: true
+
+#AV.1.8.2.38 task 74
+libexecSshrandhelper: /lib-exec/ssh-rand-helper
+libexecSshrandhelperMode: 0775
+setlibexecSshrandhelperMode: true
+
+#AV.1.8.2.39 - task 75
+libexecOpensshSftpserver2: /libexec/openssh/sftp-server
+libexecOpensshSftpserver2Mode: 0775
+setlibexecOpensshSftpserver2Mode: true
+
+#AV.1.8.2.40 - task 76
+libexecOpensshSshkeysign2: /libexec/openssh/ssh-keysign
+libexecOpensshSshkeysign2Mode: 0775
+setlibexecOpensshSshkeysign2Mode: true
+
+# AV.1.8.2.41 - task 77
+libexecOpensshSshaskpass2: /libexec/openssh/ssh-askpass
+libexecOpensshSshaskpass2Mode: 0775
+setlibexecOpensshSshaskpass2Mode: true
+
+# AV.1.8.2.42 - task 78
+libexecSftpserver2: /libexec/sftp-server
+libexecSftpserver2Mode: 0775
+setlibexecSftpserver2Mode: true
+
+#AV.1.8.2.43 - task 79
+libexecSshkeysign2: /libexec/ssh-keysign
+libexecSshkeysign2Mode: 0775
+setlibexecSshkeysign2Mode: true
+
+#AV.1.8.2.44 - task 80
+libexecSshrandhelper2: /libexec/ssh-rand-helper
+libexecSshrandhelper2Mode: 0775
+setlibexecSshrandhelper2Mode: true
+
+#AV.1.8.2.45 - task 81
+sbinSshd: /sbin/sshd
+sbinSshdMode: 0775
+setsbinSshdMode: true
+
+#AV.1.8.2.46 - task 82
+sbinSshd2: /sbin/sshd2
+sbinSshd2Mode: 0775
+setsbinSshd2Mode: true
+
+#AV.1.8.2.47 - task 83
+sbinSshdcheckconf: /sbin/sshd-check-conf
+sbinSshdcheckconfMode: 0775
+setsbinSshdcheckconfMode: true
+
+#AV.1.8.2.49 - task 84
+libSvcMethodSshd: /lib/svc/method/sshd
+libSvcMethodSshdMode: 0775
+setlibSvcMethodSshdMode: true
+
+#AV.1.8.2.50 - task 85
+usrLibSshSshd: /usr/lib/ssh/sshd
+usrLibSshSshdMode: 0775
+setusrLibSshSshdMode: true
+
+#AV.1.8.3.1 - task 86
+etcopensshSshdConfig: /etc/openssh/sshd_config
+etcopensshSshdConfigMode: 0775
+setetcopensshSshdConfigMode: true
+
+
+#AV.1.8.3.2 - task 87
+#etcSshSshdConfig: /etc/ssh/sshd_config
+etcSshSshdConfigMode: 0775
+setetcSshSshdConfigMode: true
+
+#AV.1.8.3.3 - task 88
+etcSshSshd2config: /etc/ssh/sshd2_config
+etcSshSshd2configMode: 0775
+setetcSshSshd2configMode: true
+
+#AV.1.8.3.4 - task 89
+etcSsh2Sshdconfig: /etc/ssh2/sshd_config
+etcSsh2SshdconfigMode: 0775
+setetcSsh2SshdconfigMode: true
+
+#AV.1.8.3.5 - task 90
+etcSsh2Sshd2config: /etc/ssh2/sshd2_config
+etcSsh2Sshd2configMode: 0775
+setetcSsh2Sshd2configMode: true
+
+#AV.1.8.3.6 - task 91
+etcSshdconfig: /etc/sshd_config
+etcSshdconfigMode: 0775
+setetcSshdconfigMode: true
+
+#AV.1.8.3.7- task 92
+etcSshd2config: /etc/sshd2_config
+etcSshd2configMode: 0775
+setetcSshd2configMode: true
+
+
+#AV.1.8.3.8- task 93
+usrLocalEtcSshconfig: /usr/local/etc/sshd_config
+usrLocalEtcSshconfigMode: 0775
+setusrLocalEtcSshconfigMode: true
+
+#AV.1.8.3.9- task 94
+usrLocalEtcSshd2config: /usr/local/etc/sshd2_config
+usrLocalEtcSshd2configMode: 0775
+setusrLocalEtcSshd2configMode: true
+
+# AV.1.8.3.10 - task 95
+usrLibSshSshkeysign: /usr/lib/ssh/ssh-keysign
+usrLibSshSshkeysignMode: 0775
+setusrLibSshSshkeysignMode: true
+
+# AV.1.9.1 - task 96
+SSH_PERMITUSERENV: PermitUserEnvironment no
+SetSSH_PERMITUSERENV: true
+
+
+# AV.1.9.2 - task 97
+SSH_STRICTMODES: StrictModes no
+SetSSH_STRICTMODES: true
+
+
+# AV.1.9.3 - task 98
+SSH_ACCEPTENV: AcceptEnv LANG LC_*
+SetSSH_ACCEPTENV: true
+
+
+
+
+# SSH password and System settings and Identify, Authenticate Users and System Settings
+
+
+
+SYSCTL_CONF_FILE_PATH: /etc/sysctl.conf
+
+# AV.1.1.1 - task 3
+PermitEmptyPasswords: PermitEmptyPasswords no
+SetPermitEmptyPasswords: true
+#task 22-23 SSH Setting variables
+
+
+# AV.1.4.1 - task 10
+#enableKeepAlive: KeepAlive yes
+
+# AV.1.4.2 - task 11
+enableTCPKeepAlive: TCPKeepAlive yes 
+SetenableTCPKeepAlive: true
+
+# AV.1.4.3 - task 12
+LoginGraceTime: LoginGraceTime 120
+SetLoginGraceTime: true
+
+
+# AV.1.4.4 - task 13
+#MaxConnections: MaxConnections 40
+
+# AV.1.4.5 - task 14
+MaxStartups: MaxStartups 100
+SetMaxStartups: true
+
+
+
+# AV.1.4.8 - task 15
+MaxAuthTries: MaxAuthTries 5
+SetMaxAuthTries: true
+
+
+# AV.1.4.14 - task 16
+#AuthKbdInt_Retries: AuthKbdInt.Retries 5
+
+
+
+# AV.1.7.3.1, AV.1.7.3.2, AV.1.7.3.3 - task 23, 24, 25 Eliminate host-based authentication file. 
+hosts_equiv: /etc/hosts.equiv
+SetHosts_equiv: true
+
+# AV.1.7.4 task 26 
+PubkeyAuthentication: PubkeyAuthentication yes
+SetPubkeyAuthentication: true
+
+# AV.1.7.5 task 27
+RSAAuthentication: RSAAuthentication yes
+SetRSAAuthentication: true
+
+
+# AV.1.7.6 task 28
+HostbasedAuthentication: HostbasedAuthentication no
+SetHostbasedAuthentication: true
+
+
+# AV.1.7.7 task 29
+#AllowedAuthentications: AllowedAuthentications publickey
+
+#.....................................Network tasks for SSH..........................................................................
+
+
+# AV.1.5.1 task 17
+SSH_KEYREGENERATIONINTERVAL: KeyRegenerationInterval 3600
+SetSSH_KEYREGENERATIONINTERVAL: true
+
+# AV.1.5.2 task 18 
+SSH_PROTOCOL: Protocol 2
+Set_SSH_PROTOCOL: true
+
+# AV.1.5.3 task 19
+SSH_GATEWAYPORTS: GatewayPorts no
+Set_SSH_GATEWAYPORTS: true
+
+# AV.1.7.1.1 task 20
+PermitRootLogin: PermitRootLogin no
+SetPermitRootLogin: true
+
+
+
+
+# AV.2.0.1.1 -task 99
+PrintMotd: PrintMotd yes
+SetPrintMotd: true
+
+#AV.2.1.1.1
+Native_Encryption_Ciphers: Ciphers aes128-ctr,aes192-ctr,aes256-ctr
+SetNative_Encryption_Ciphers: true
+
+
+#AV.2.1.2 task 102
+ServerKeyBits: ServerKeyBits 2048
+SetServerKeyBits: true
+
+
+#task 35
+#keepalive_time: net.ipv4.tcp_keepalive_time = 30
+#keepalive_probes: net.ipv4.tcp_keepalive_probes = 5
+#keepalive_intvl: net.ipv4.tcp_keepalive_intvl = 10
+
+

@@ -1,0 +1,195 @@
+#task AD.1.1.1.1
+- name: AD.1.1.1.1- Set max password expiry days
+  lineinfile: 
+      dest: '{{login_def_file_path}}'
+      regexp: '^(.*)PASS_MAX_DAYS(.*)$' 
+      line: '{{PASS_MAX_DAYS}}'
+      backrefs: yes
+  when: SET_PASS_MAX_DAYS
+
+#task AD.1.1.1.2
+- name: AD.1.1.1.2 and AD.1.1.3.2- Copy script to set max and min password expiry day
+  copy: src="{{ shell_script_path }}{{ set_passwd_maxnmin_age_sh}}" dest="{{shell_script_destination}}" mode=0777
+  when: SET_PASS_MAX_DAY or SET_PASS_MIN_DAY
+
+- name: AD.1.1.1.2 and AD.1.1.3.2- Execute the script to set max and min password expiry day 
+  command: 'sh {{shell_script_destination}}/{{set_passwd_maxnmin_age_sh}} {{PASS_MIN_DAY}} {{PASS_MAX_DAY}}'
+  when: SET_PASS_MAX_DAY or SET_PASS_MIN_DAY
+
+#task AD.1.1.2
+- name: AD.1.1.2- Set Minimum password lenth 8 charaters
+  lineinfile: 
+      dest: '{{login_def_file_path}}'  
+      regexp: '^PASS_MIN_LEN(.*)$' 
+      line: '{{PASS_MIN_LENGTH}}'
+      backrefs: yes
+  when: SET_PASS_MIN_LENGTH
+
+#task AD.1.1.3.1
+- name: AD.1.1.3.1 - Set min password time
+  lineinfile: 
+      dest: '{{login_def_file_path}}' 
+      regexp: '^PASS_MIN_DAYS(.*)$' 
+      line: '{{PASS_MIN_DAYS}}'
+      backrefs: yes
+  when: SET_PASS_MIN_DAYS
+
+
+#task AD.1.1.7.2
+- name: AD.1.1.7.2- Template /etc/securetty file
+  template:
+    src: "{{securetty_file_path_j2}}"
+    dest: "{{securetty_file_path}}"
+  when: template_securetty_file
+
+
+#AD.1.1.10.2 task49
+- name: AD.1.1.10.2 - get '{{ftpusers_file_path}}' file status 
+  stat:
+     path: '{{ftpusers_file_path}}'
+  register: ftpusers_file_stat
+
+
+- name: AD.1.1.10.2 - Display '{{ftpusers_file_path}}' file status
+  debug: msg="{{ ftpusers_file_path }} {{ 'file found on the end point' if ftpusers_file_stat.stat.exists else 'file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.1.10.2 - Check root entry 
+  shell: grep ^root {{ftpusers_file_path}} | cat
+  register: check_root_entry
+  when: ftpusers_file_stat.stat.exists and set_root_on_ftpusers
+  check_mode: no
+
+- name: AD.1.1.10.2 - Restrict ftp access
+  lineinfile:
+    path: '{{ftpusers_file_path}}'
+    line: 'root'
+  when: ftpusers_file_stat.stat.exists and set_root_on_ftpusers
+
+
+- name: AD.1.1.10.2- Restrict ftp access- get '{{vsftpd_ftpusers_file_path}}' file status 
+  stat:
+     path: '{{vsftpd_ftpusers_file_path}}'
+  register: vsftpd_ftpusers_file_stat
+
+- name: AD.1.1.10.2 - Display '{{vsftpd_ftpusers_file_path}}' file status
+  debug: msg="{{ vsftpd_ftpusers_file_path }} {{ 'file found on the end point' if vsftpd_ftpusers_file_stat.stat.exists else 'file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AD.1.1.10.2 - Check root entry 
+  shell: grep ^root {{vsftpd_ftpusers_file_path}} | cat
+  register: check_root_entry_on_vsftpd
+  when: vsftpd_ftpusers_file_stat.stat.exists and set_root_on_ftpusers
+  check_mode: no
+
+- name: AD.1.1.10.2 - Restrict ftp access
+  lineinfile:
+    path: '{{vsftpd_ftpusers_file_path}}'
+    line: 'root'
+  when: vsftpd_ftpusers_file_stat.stat.exists and set_root_on_ftpusers
+
+
+#task AD.1.1.13.4 -row 34
+
+- stat:
+     path: '{{sshd_config_file_path}}'
+  register: sshd_config_file
+
+- name: AD.1.1.13.4 - Prevent ssh login from bypassing pam by setting "UsePAM yes" 
+  lineinfile:
+    dest: '{{sshd_config_file_path}}' 
+    regexp: '^(.*)UsePAM(.*)$'
+    line: "{{UsePAM}}"
+    backrefs: yes
+  when: sshd_config_file.stat.exists and SET_UsePAM
+
+
+#AD.1.4.2 task 49 
+
+- name: AD.1.4.2- Restrict root ftp access 
+  lineinfile:
+    dest: '{{ftpusers_file_path}}'
+    line: "root"
+  when: ftpusers_file_stat.stat.exists and set_restrict_root_ftp_access
+
+
+# AD.2.0.1 task 172
+- name: AD.2.0.1- Logon screens Business Use Notice exists How implemented "{{business_Use_Notice_motd}}" 
+  template:
+    src: "{{business_Use_Notice_motd_j2}}"
+    dest: "{{business_Use_Notice_motd}}"
+  when: set_logon_business_Use_Notice
+
+
+- name: AD.2.0.1- Logon screens Business Use Notice exists How implemented "{{business_Use_Notice_issue}}" 
+  template:
+    src: "{{business_Use_Notice_issue_j2}}"
+    dest: "{{business_Use_Notice_issue}}"
+  when: set_logon_business_Use_Notice
+
+
+#  AD.1.1.2, AD.1.1.4.1, AD.1.1.6.1 and AD.1.1.13.1.0 - task 4, 7 and 13
+
+- stat:
+     path: '{{system_auth_path}}'
+  register: system_auth_file_stat
+
+- name: AD.1.1.2, AD.1.1.4.1, AD.1.1.6.1 and AD.1.1.13.1.0 - Display '{{system_auth_file_stat}}' file status
+  debug: msg="{{ system_auth_path }} {{ 'file found on the end point' if system_auth_file_stat.stat.exists else 'file not found on the end point'}}" 
+
+- stat:
+     path: '{{password_auth_path}}'
+  register: password_auth_file_stat
+
+- name: AD.1.1.2, AD.1.1.4.1, AD.1.1.6.1 and AD.1.1.13.1.0 - Display '{{password_auth_path}}' file status
+  debug: msg="{{ password_auth_path }} {{ 'file found on the end point' if password_auth_file_stat.stat.exists else 'file not found on the end point'}}" 
+
+
+- name: AD.1.1.2, AD.1.1.4.1, AD.1.1.6.1 and AD.1.1.13.1.0 -find PAM Module on endpoint
+  shell: "{{ FIND_PAM_MODULE }}"
+  register: findresult
+
+- name: 'Display PAM Module'
+  debug:
+    msg: "{{ findresult.stdout }}"
+
+
+- name: AD.1.1.2, AD.1.1.4.1, AD.1.1.6.1 and AD.1.1.13.1.0 - Template System Auth file
+  template:
+    src: "{{ pam_cracklib_so_system_auth_j2 }}"
+    dest: "{{system_auth_path}}"
+  when: templatePAMFiles  and findresult.stdout == "pam_cracklib.so"
+
+
+- name: AD.1.1.2, AD.1.1.4.1, AD.1.1.6.1 and AD.1.1.13.1.0- Template password-auth file 
+  template:
+    src: "{{ pam_cracklib_so_password_auth_j2 }}"
+    dest: "{{password_auth_path}}"
+  when: templatePAMFiles  and findresult.stdout == "pam_cracklib.so"
+
+
+- name: AD.1.1.2, AD.1.1.4.1, AD.1.1.6.1 and AD.1.1.13.1.0 - Template System Auth file
+  template:
+    src: "{{ pam_passwdqc_so_system_auth_j2 }}"
+    dest: "{{system_auth_path}}"
+  when: templatePAMFiles  and findresult.stdout == "pam_passwdqc.so"
+
+
+- name: AD.1.1.2, AD.1.1.4.1, AD.1.1.6.1 and AD.1.1.13.1.0- Template password-auth file 
+  template:
+    src: "{{ pam_passwdqc_so_password_auth_j2 }}"
+    dest: "{{password_auth_path}}"
+  when: templatePAMFiles  and findresult.stdout == "pam_passwdqc.so"
+
+
+- name: AD.1.1.2, AD.1.1.4.1, AD.1.1.6.1 and AD.1.1.13.1.0 - Template System Auth file
+  template:
+    src: "{{ pam_pwquality_so_system_auth_j2 }}"
+    dest: "{{system_auth_path}}"
+  when: templatePAMFiles  and findresult.stdout == "pam_pwquality.so"
+
+
+- name: AD.1.1.2, AD.1.1.4.1, AD.1.1.6.1 and AD.1.1.13.1.0- Template password-auth file 
+  template:
+    src: "{{ pam_pwquality_so_password_auth_j2 }}"
+    dest: "{{ password_auth_path }}"
+  when: templatePAMFiles  and findresult.stdout == "pam_pwquality.so"

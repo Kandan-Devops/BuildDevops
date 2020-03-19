@@ -1,0 +1,151 @@
+
+
+- stat:
+   path: '{{SSH_CONFIG_FILE}}'
+  register: sshd_config_stat
+
+- name: display file status of /etc/ssh/sshd_config
+  debug: msg="{{ '/etc/ssh/sshd_config file found on the end point' if sshd_config_stat.stat.exists else '/etc/ssh/sshd_config file not found on the end point, and the following task will be skipped'}}" 
+
+
+
+- name: AV.1.2.1.2 and and AV.1.2.1.3 - Uncommenting logLevel in '{{SSH_CONFIG_FILE}}' if already commented
+  replace:
+   path: '{{SSH_CONFIG_FILE}}'
+   regexp: '^\s*#\s*LogLevel.*'
+   replace: '{{ LogLevel }}'
+  when: sshd_config_stat.stat.exists and SetLogLevel
+
+
+- name: AV.1.2.1.2 and AV.1.2.1.3 - Uncommenting logLevel in '{{SSH_CONFIG_FILE}}' if already commented
+  replace:
+   path: '{{SSH_CONFIG_FILE}}'
+   regexp: '^(.*)LogLevel(.*)'
+   replace: '{{ LogLevel }}'
+  when: sshd_config_stat.stat.exists and SetLogLevel
+
+- name: AV.1.2.1.2 and AV.1.2.1.3- Checking logLevel in '{{SSH_CONFIG_FILE}}' if already commented
+  shell: grep ^LogLevel {{SSH_CONFIG_FILE}} | cat
+  register: Chck_LogLevel
+  when: sshd_config_stat.stat.exists
+  check_mode: no
+
+- name: AV.1.2.1.2 and AV.1.2.1.3- Uncommenting/Setting logLevel in '{{SSH_CONFIG_FILE}}' if already commented
+  lineinfile:
+    dest: '{{SSH_CONFIG_FILE}}'
+    line:  '{{ LogLevel }}'
+  when: Chck_LogLevel.stdout_lines != "" and sshd_config_stat.stat.exists and SetLogLevel
+
+# Task 6
+- name: AV.1.2.1.3 - Checking if the logLevel is set to Debug
+  shell: cat '{{SSH_CONFIG_FILE}}' | grep -i debug | awk '{print $2}'
+  register: isdebug
+  check_mode: no
+
+- stat:
+   path: /etc/syslog.conf
+  register: stat_result_syslog
+
+- name: check the log level set to DEBUG or not
+  debug: msg="{{ 'Log level set to DEBUG' if isdebug.stdout_lines!="" and isdebug.stdout == 'DEBUG' else 'Log level not set to DEBUG, and the following task will be skipped'}}" 
+
+- name: display file status of /etc/syslog.conf
+  debug: msg="{{ '/etc/syslog.conf file found on the end point' if stat_result_syslog.stat.exists else '/etc/syslog.conf file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AV.1.2.1.3 - Changing the syslog permission 
+  file:
+    dest: /etc/syslog.conf
+    mode: 0600
+  when: isdebug.stdout == 'DEBUG' and stat_result_syslog.stat.exists
+
+- stat:
+   path: /etc/rsyslog.conf
+  register: stat_result_rsyslog
+
+
+
+- name: check the log level set to DEBUG or not
+  debug: msg="{{ 'Log level set to DEBUG' if isdebug.stdout_lines!="" and isdebug.stdout == 'DEBUG' else 'Log level not set to DEBUG , and the following task will be skipped'}}" 
+
+- name: display file status of /etc/rsyslog.conf
+  debug: msg="{{ '/etc/rsyslog.conf file found on the end point' if stat_result_rsyslog.stat.exists else '/etc/rsyslog.conf file not found on the end point, and the following task will be skipped'}}" 
+
+- name: Chaning the rsyslog permission 
+  file:
+    dest: /etc/rsyslog.conf
+    mode: 0600
+  when: isdebug.stdout == 'DEBUG' and stat_result_rsyslog.stat.exists
+
+# Task 8
+
+- stat:
+   path: "{{ logrotate }}"
+  register: stat_result
+
+- name: display file status of {{ logrotate }}
+  debug: msg="{{ logrotate }} {{ ' file found on the end point' if stat_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AV.1.2.4 -Setting up the log retention time to weekly format in /etc/logrotate.conf
+  replace:
+   path: "{{ logrotate }}"
+   regexp: '^monthly|daily(.*)$'
+   replace: "{{ logrotate_format }}"
+  when: stat_result.stat.exists and set_logrotate_format
+
+- name: AV.1.2.4 -Setting up the log retention time to weekly format in /etc/logrotate.conf
+  shell: grep ^{{ logrotate_format }} {{ logrotate }} | cat
+  register: check_logrotate_format
+  when: stat_result.stat.exists
+  check_mode: no
+
+- name:  AV.1.2.4 -Setting up the log retention time to weekly format in /etc/logrotate.conf
+  lineinfile:
+    dest: "{{ logrotate }}"
+    line:  "{{ logrotate_format }}"
+  when: check_logrotate_format.stdout_lines != "" and stat_result.stat.exists and set_logrotate_format
+
+
+- name: AV.1.2.4 - Setting up the log retention time to 90 days in /etc/logrotate.conf
+  replace:
+   path: "{{ logrotate }}"
+   regexp: '^rotate(.*)$'
+   replace: "{{ logrotate_msg }}"
+  when: stat_result.stat.exists 
+
+- name: AV.1.2.4 - Setting up the log retention time to 90 days in /etc/logrotate.conf
+  shell: grep ^rotate {{ logrotate }} | cat
+  register: check_logrotate_msg
+  when: stat_result.stat.exists
+  check_mode: no
+
+- name: AV.1.2.4 - Setting up the log retention time to 90 days in /etc/logrotate.conf
+  lineinfile:
+    dest: "{{ logrotate }}"
+    line:  "{{ logrotate_msg }}"
+  when: check_logrotate_msg.stdout_lines != "" and stat_result.stat.exists and setlogrotate_msg
+
+
+
+
+#Task 44 (Ssh Gateway port)
+
+#- name: AV.1.2.2 - Update line in ssh config file to set QuietMode to no
+#  replace:
+#    path: '{{SSH_CONFIG_FILE}}'
+#    regexp: '^(.*)QuietMode(.*)$'
+#    replace: '{{QuietMode}}'
+#  when: sshd_config_stat.stat.exists and SetQuietMode
+
+#- name: AV.1.2.2 - check line in ssh config file to set QuietMode to no
+#  shell: grep ^QuietMode {{SSH_CONFIG_FILE}} | cat
+#  register: CHECK_SSH_QuietMode
+#  when: sshd_config_stat.stat.exists
+#  check_mode: no
+
+#- name: AV.1.2.2 -insert line in ssh config file to set QuietMode to no if not exist
+#  lineinfile:
+#    dest: '{{ SSH_CONFIG_FILE }}'
+#    line:  '{{ QuietMode }}'
+#  when: CHECK_SSH_QuietMode.stdout_lines != "" and sshd_config_stat.stat.exists and SetQuietMode
+

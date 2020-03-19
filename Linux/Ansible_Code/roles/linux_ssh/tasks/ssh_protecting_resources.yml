@@ -1,0 +1,916 @@
+#Protecting Resources Task for SSH
+
+# AV.1.8.2.1 task 37
+- stat:
+     path: "{{ binOpenSSl }}"
+  register: openssl_file_stat
+
+- name: AV.1.8.2.1 - Display file status of {{ binOpenSSl }}
+  debug: msg="{{ binOpenSSl }} {{ ' file found on the end point' if openssl_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AV.1.8.2.1 - Changing {{ binOpenSSl }} file permissions
+  file: dest={{ binOpenSSl }} mode={{ binOpenSSlMode }}
+  when: openssl_file_stat.stat.exists and setbinOpenSSlMode
+
+
+# AV.1.8.2.2 task 38
+
+- stat:
+     path: "{{ binScp }}"
+  register: binScp_file_stat
+
+- name: AV.1.8.2.2 - Display file status of {{ binScp }}
+  debug: msg="{{ binScp }} {{ ' file found on the end point' if binScp_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AV.1.8.2.2 - Changing {{ binScp }} file permissions
+  file: dest={{ binScp }} mode={{ binScpMode }}
+  when: binScp_file_stat.stat.exists and setbinScpMode 
+
+# AV.1.8.2.3 task 39
+
+- stat:
+     path: "{{ binScp2 }}"
+  register: binScp2_file_stat
+
+- name: AV.1.8.2.3 - Display file status of {{ binScp2 }}
+  debug: msg="{{ binScp2 }} {{ ' file found on the end point' if binScp2_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AV.1.8.2.3 - Changing {{ binScp2 }} file permissions
+  file: dest={{ binScp2 }} mode={{ binScp2Mode }}
+  when: binScp2_file_stat.stat.exists and setbinScp2Mode
+
+
+# AV.1.8.2.4 task 40
+
+- stat:
+     path: "{{ binSftp }}"
+  register: binSftp_file_stat
+
+- name: AV.1.8.2.4 - Display file status of {{ binSftp }}
+  debug: msg="{{ binSftp }} {{ ' file found on the end point' if binSftp_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AV.1.8.2.4 - Changing {{ binSftp }} file permissions
+  file: dest={{ binSftp }} mode={{ binSftpMode }}
+  when: binSftp_file_stat.stat.exists and setbinSftpMode
+
+
+# AV.1.8.2.5 task 41
+
+- stat:
+     path: "{{ binSftp2 }}"
+  register: binSftp2_file_stat
+
+
+- name:  AV.1.8.2.5 - Display file status of {{ binSftp2 }}
+  debug: msg="{{ binSftp2 }}  {{ ' file found on the end point' if binSftp2_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AV.1.8.2.5 - Changing {{ binSftp2 }} file permissions
+  file: dest={{ binSftp2 }} mode={{ binSftp2Mode }}
+  when: binSftp2_file_stat.stat.exists and setbinSftp2Mode
+
+
+# AV.1.8.2.6 task 42
+
+- stat:
+     path: "{{ binSftpServer }}"
+  register: binSftpServer_file_stat
+
+- name:  AV.1.8.2.6 - Display file status of {{ binSftpServer }}
+  debug: msg="{{ binSftpServer }} {{ ' file found on the end point' if binSftpServer_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AV.1.8.2.6 - Changing {{ binSftpServer }} file permissions
+  file: dest={{ binSftpServer }} mode={{ binSftpServerMode }}
+  when: binSftpServer_file_stat.stat.exists and setbinSftpServerMode
+
+
+# AV.1.8.2.7 task 43
+
+- stat:
+     path: "{{ binSftpServer2 }}"
+  register: binSftpServer2_file_stat
+
+- name:  AV.1.8.2.7 - Display file status of {{ binSftpServer2 }}
+  debug: msg="{{ binSftpServer2 }} {{ ' file found on the end point' if binSftpServer2_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+
+- name: AV.1.8.2.7- Changing {{ binSftpServer2 }} file permissions
+  file: dest={{ binSftpServer2 }} mode={{ binSftpServer2Mode }}
+  when: binSftpServer2_file_stat.stat.exists and setbinSftpServer2Mode
+
+
+# AV.1.8.2.8 -task 44
+
+- stat:
+     path: "{{ binSlogin }}"
+  register: binSlogin_file_stat
+
+- name:  AV.1.8.2.8 - Display file status of {{ binSlogin }}
+  debug: msg="{{ binSlogin }} {{ ' file found on the end point' if binSlogin_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+
+- name: AV.1.8.2.8- Changing {{ binSlogin }} file permissions
+  file: dest={{ binSlogin }} mode={{ binSloginMode }}
+  when: binSlogin_file_stat.stat.exists and setbinSloginMode
+
+
+# AV.1.8.2.9 - task 45
+
+- stat:
+     path: "{{ binSsh }}"
+  register: binSsh_file_stat
+
+
+- name:  AV.1.8.2.9 - Display file status of {{ binSsh }}
+  debug: msg="{{ binSsh }} {{ ' file found on the end point' if binSsh_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+
+- name: AV.1.8.2.9 - Changing {{ binSsh }} file permissions
+  file: dest={{ binSsh }} mode={{ binSshMode }}
+  when: binSsh_file_stat.stat.exists and setbinSshMode
+
+
+# AV.1.8.2.10 - task 46
+
+- stat:
+     path: "{{ binSsh2 }}"
+  register: binSsh2_file_stat
+
+
+- name:  AV.1.8.2.10 - Display file status of {{ binSsh2 }}
+  debug: msg="{{ binSsh2 }} {{ ' file found on the end point' if binSsh2_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+
+- name: AV.1.8.2.10 - Changing {{ binSsh2 }} file permissions
+  file: dest={{ binSsh2 }} mode={{ binSs2hMode }}
+  when: binSsh2_file_stat.stat.exists and setbinSsh2Mode
+
+
+# AV.1.8.2.11 task 47
+
+- stat:
+     path: "{{ binSshAdd }}"
+  register: binSshAdd_file_stat
+
+
+- name:  AV.1.8.2.11 - Display file status of {{ binSshAdd }}
+  debug: msg="{{ binSshAdd }} {{ ' file found on the end point' if binSshAdd_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+
+- name: AV.1.8.2.11 - Changing {{ binSshAdd }} file permissions
+  file: dest={{ binSshAdd }} mode={{ binSshAddMode }}
+  when: binSshAdd_file_stat.stat.exists and setbinSshAddMode
+
+
+# AV.1.8.2.12 task 48
+
+- stat:
+     path: "{{ binSshAdd2 }}"
+  register: binSshAdd2_file_stat
+
+- name:  AV.1.8.2.12 - Display file status of {{ binSshAdd2 }}
+  debug: msg="{{ binSshAdd2 }} {{ ' file found on the end point' if binSshAdd2_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+
+- name: AV.1.8.2.12 - Changing {{ binSshAdd2 }} file permissions
+  file: dest={{ binSshAdd2 }} mode={{ binSshAdd2Mode }}
+  when: binSshAdd2_file_stat.stat.exists and setbinSshAdd2Mode
+
+
+# AV.1.8.2.13 task 49
+
+- stat:
+     path: "{{ binSshAgent }}"
+  register: binSshAgent_file_stat
+
+
+- name:  AV.1.8.2.13 - Display file status of {{ binSshAgent }}
+  debug: msg=" {{ binSshAgent }} {{ ' file found on the end point' if binSshAgent_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+- name: AV.1.8.2.13 - Changing {{ binSshAgent }} file permissions
+  file: dest={{ binSshAgent }} mode={{ binSshAgentMode }}
+  when: binSshAgent_file_stat.stat.exists and setbinSshAgentMode
+
+
+# AV.1.8.2.14 task 50
+
+- stat:
+     path: "{{ binSshAgent2 }}"
+  register: binSshAgent2_file_stat
+
+- name:  AV.1.8.2.14 - Display file status of {{ binSshAgent2 }}
+  debug: msg="{{ binSshAgent2 }} {{ ' file found on the end point' if binSshAgent2_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+- name: AV.1.8.2.14 - Changing {{ binSshAgent2 }} file permissions
+  file: dest={{ binSshAgent2 }} mode={{ binSshAgent2Mode }}
+  when: binSshAgent2_file_stat.stat.exists and setbinSshAgent2Mode
+
+
+# AV.1.8.2.15 task 51
+
+- stat:
+     path: "{{ binSshAskPass }}"
+  register: binSshAskPass_file_stat
+
+- name:  AV.1.8.2.15 - Display file status of {{ binSshAskPass }}
+  debug: msg="{{ binSshAskPass }} {{ ' file found on the end point' if binSshAskPass_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+- name: AV.1.8.2.15 - Changing {{ binSshAskPass }} file permissions
+  file: dest={{ binSshAskPass }} mode={{ binSshAskPassMode }}
+  when: binSshAskPass_file_stat.stat.exists and setbinSshAskPassMode
+
+
+# AV.1.8.2.16 task 52
+
+- stat:
+     path: "{{ binSshAskPass2 }}"
+  register: binSshAskPass2_file_stat
+
+
+- name:  AV.1.8.2.16 - Display file status of {{ binSshAskPass2 }}
+  debug: msg="{{ binSshAskPass2 }} {{ ' file found on the end point' if binSshAskPass2_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+- name: AV.1.8.2.16 - Changing {{ binSshAskPass2 }} file permissions
+  file: dest={{ binSshAskPass2 }} mode={{ binSshAskPass2Mode }}
+  when: binSshAskPass2_file_stat.stat.exists and setbinSshAskPass2Mode
+
+
+# AV.1.8.2.17 task 53
+
+- stat:
+     path: "{{ binSshCertenroll2 }}"
+  register: binSshCertenroll2_file_stat
+
+- name:  AV.1.8.2.17 - Display file status of {{ binSshCertenroll2 }}
+  debug: msg="{{ binSshCertenroll2 }}  {{ ' file found on the end point' if binSshCertenroll2_file_stat.stat.exists else 'file not found on the end point, and the following task will be skipped'}}"
+
+- name: AV.1.8.2.17 - Changing {{ binSshCertenroll2 }} file permissions
+  file: dest={{ binSshCertenroll2 }} mode={{ binSshCertenroll2Mode }}
+  when: binSshCertenroll2_file_stat.stat.exists and setbinSshCertenroll2Mode
+
+
+# AV.1.8.2.18 task 54
+
+- stat:
+     path: "{{ binSshChrootmgr }}"
+  register: binSshChrootmgr_file_stat
+
+- name:  AV.1.8.2.18 - Display file status of {{ binSshChrootmgr }}
+  debug: msg="{{ binSshChrootmgr }} {{ ' file found on the end point' if binSshChrootmgr_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+
+- name: AV.1.8.2.18 - Changing {{ binSshChrootmgr }} file permissions
+  file: dest={{ binSshChrootmgr }} mode={{ binSshChrootmgrMode }}
+  when: binSshChrootmgr_file_stat.stat.exists and setbinSshChrootmgrMode
+
+
+# AV.1.8.2.19 task 55
+
+- stat:
+     path: "{{ binSshDummyShell }}"
+  register: binSshDummyShell_file_stat
+
+
+- name:  AV.1.8.2.19 - Display file status of {{ binSshDummyShell }}
+  debug: msg="{{ binSshDummyShell }} {{ ' file found on the end point' if binSshDummyShell_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+
+- name: AV.1.8.2.19 - Changing {{ binSshDummyShell }} file permissions
+  file: dest={{ binSshDummyShell }} mode={{ binSshDummyShellMode }}
+  when: binSshDummyShell_file_stat.stat.exists and setbinSshDummyShellMode
+
+
+#AV.1.8.2.20 task 56
+
+- stat:
+     path: "{{ binSshKeygen }}"
+  register: binSshKeygen_file_stat
+
+- name:  AV.1.8.2.20 - Display file status of {{ binSshKeygen }}
+  debug: msg="{{ binSshKeygen }} {{ ' file found on the end point' if binSshKeygen_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+- name: AV.1.8.2.20 - Changing {{ binSshKeygen }} file permissions
+  file: dest={{ binSshKeygen }} mode={{ binSshKeygenMode }}
+  when: binSshKeygen_file_stat.stat.exists and setbinSshKeygenMode
+
+
+# AV.1.8.2.21 task 57
+
+- stat:
+     path: "{{ binSshKeygen2 }}"
+  register: binSshKeygen2_file_stat
+
+- name:  AV.1.8.2.21 - Display file status of {{ binSshKeygen2 }}
+  debug: msg="{{ binSshKeygen2 }} {{ 'file found on the end point' if binSshKeygen2_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+- name: AV.1.8.2.21 - Changing {{ binSshKeygen2 }} file permissions
+  file: dest={{ binSshKeygen2 }} mode={{ binSshKeygen2Mode }}
+  when: binSshKeygen2_file_stat.stat.exists and setbinSshKeygen2Mode
+
+
+# AV.1.8.2.22 task 58
+
+- stat:
+     path: "{{ binSshKeyscan }}"
+  register: binSshKeyscan_file_stat
+
+- name:  AV.1.8.2.22 - Display file status of {{ binSshKeyscan }}
+  debug: msg="{{ binSshKeyscan }} {{ ' file found on the end point' if binSshKeyscan_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+- name: AV.1.8.2.22 - Changing {{ binSshKeyscan }} file permissions
+  file: dest={{ binSshKeyscan }} mode={{ binSshKeyscanMode }}
+  when: binSshKeyscan_file_stat.stat.exists and setbinSshKeyscanMode
+
+# AV.1.8.2.23 task 59
+
+- stat:
+     path: "{{ binSshPamClient }}"
+  register: binSshPamClient_file_stat
+
+- name:  AV.1.8.2.23 - Display file status of {{ binSshPamClient }}
+  debug: msg="{{ binSshPamClient }} {{ ' file found on the end point' if binSshPamClient_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+- name: AV.1.8.2.23 - Changing {{ binSshPamClient }} file permissions
+  file: dest={{ binSshPamClient }} mode={{ binSshPamClientMode }}
+  when: binSshPamClient_file_stat.stat.exists and setbinSshPamClientMode
+
+
+# AV.1.8.2.24 task 60
+- stat:
+     path: "{{ binSshProbe }}"
+  register: binSshProbe_file_stat
+
+- name:  AV.1.8.2.24 - Display file status of {{ binSshProbe }}
+  debug: msg=" {{ binSshProbe }}{{ ' file found on the end point' if binSshProbe_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+- name: AV.1.8.2.24 - Changing {{ binSshProbe }} file permissions
+  file: dest={{ binSshProbe }} mode={{ binSshProbeMode }}
+  when: binSshProbe_file_stat.stat.exists and setbinSshProbeMode
+
+
+# AV.1.8.2.25 task 61
+
+- stat:
+     path: "{{ binSshProbe2 }}"
+  register: binSshProbe2_file_stat
+
+- name:  AV.1.8.2.25 - Display file status of {{ binSshProbe2 }}
+  debug: msg="{{ binSshProbe2 }} {{ ' file found on the end point' if binSshProbe2_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+- name: AV.1.8.2.25 - Changing {{ binSshProbe2 }} file permissions
+  file: dest={{ binSshProbe2 }} mode={{ binSshProbe2Mode }}
+  when: binSshProbe2_file_stat.stat.exists and setbinSshProbe2Mode
+
+
+# AV.1.8.2.26 task 62
+
+- stat:
+     path: "{{ binSshPubkeymgr }}"
+  register: binSshPubkeymgr_file_stat
+
+- name:  AV.1.8.2.26 - Display file status of {{ binSshPubkeymgr }}
+  debug: msg="{{ binSshPubkeymgr }} {{ ' file found on the end point' if binSshPubkeymgr_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+- name:  AV.1.8.2.26 - Changing {{ binSshPubkeymgr }} file permissions
+  file: dest={{ binSshPubkeymgr }} mode={{ binSshPubkeymgrMode }}
+  when: binSshPubkeymgr_file_stat.stat.exists and setbinSshPubkeymgrMode
+
+
+# AV.1.8.2.27 task 63
+- stat:
+     path: "{{ binSshSinger }}"
+  register: binSshSinger_file_stat
+
+- name:  AV.1.8.2.27 - Display file status of {{ binSshSinger }}
+  debug: msg="{{ binSshSinger }} {{ ' file found on the end point' if binSshSinger_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+- name: AV.1.8.2.27 - Changing {{ binSshSinger }} file permissions
+  file: dest={{ binSshSinger }} mode={{ binSshSingerMode }}
+  when: binSshSinger_file_stat.stat.exists and setbinSshSingerMode 
+
+
+# AV.1.8.2.28 task 64
+
+- stat:
+     path: "{{ binSshSinger2 }}"
+  register: binSshSinger2_file_stat
+
+- name:  AV.1.8.2.28 - Display file status of {{ binSshSinger2 }}
+  debug: msg="{{ binSshSinger2 }} {{ ' file found on the end point' if binSshSinger2_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+
+- name: AV.1.8.2.28 - Changing {{ binSshSinger2 }} file permissions
+  file: dest={{ binSshSinger2 }} mode={{ binSshSinger2Mode }}
+  when: binSshSinger2_file_stat.stat.exists and setbinSshSinger2Mode 
+
+
+# AV.1.8.2.29 task 65
+
+- stat:
+     path: "{{ libLibcryptoDotA }}"
+  register: libLibcryptoDotA_file_stat
+
+- name:  AV.1.8.2.29 - Display file status of {{ libLibcryptoDotA }}
+  debug: msg="{{ libLibcryptoDotA }}  {{ ' file found on the end point' if libLibcryptoDotA_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+
+- name: AV.1.8.2.29 - Changing {{ libLibcryptoDotA }} file permissions
+  file: dest={{ libLibcryptoDotA }} mode={{ libLibcryptoDotAMode }}
+  when: libLibcryptoDotA_file_stat.stat.exists and setlibLibcryptoDotAMode
+
+
+#AV.1.8.2.30 -task 66
+
+- stat:
+     path: "{{ libLibsshDotA }}"
+  register: libLibsshDotA_file_stat
+
+- name:  AV.1.8.2.30 - Display file status of {{ libLibsshDotA }}
+  debug: msg="{{ libLibsshDotA }} {{ ' file found on the end point' if libLibsshDotA_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+- name: AV.1.8.2.30 - Changing {{ libLibsshDotA }} file permissions
+  file: dest={{ libLibsshDotA }} mode={{ libLibsshDotAMode }}
+  when: libLibsshDotA_file_stat.stat.exists and setlibLibsshDotAMode
+
+
+#AV.1.8.2.31 -task 67
+
+- stat:
+     path: "{{ libLibsslDotA }}"
+  register: libLibsslDotA_file_stat
+
+- name:  AV.1.8.2.31 - Display file status of {{ libLibsslDotA }}
+  debug: msg="{{ libLibsslDotA }} {{ ' file found on the end point' if libLibsslDotA_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+- name: AV.1.8.2.31  - Changing {{ libLibsslDotA }} file permissions
+  file: dest={{ libLibsslDotA }} mode={{ libLibsslDotAMode }}
+  when: libLibsslDotA_file_stat.stat.exists and setlibLibsslDotAMode
+
+
+#AV.1.8.2.32 -task 68
+
+- stat:
+     path: "{{ libLibZDotA }}"
+  register: libLibZDotA_file_stat
+
+- name:  AV.1.8.2.32 - Display file status of {{ libLibZDotA }}
+  debug: msg="{{ libLibZDotA }} {{ ' file found on the end point' if libLibZDotA_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+
+- name: AV.1.8.2.32 - Changing {{ libLibZDotA }} file permissions
+  file: dest={{ libLibZDotA }} mode={{ libLibZDotAMode }}
+  when: libLibZDotA_file_stat.stat.exists and setlibLibZDotAMode
+
+
+#AV.1.8.2.33 - task 69
+
+- stat:
+     path: "{{ libexecOpensshSftpserver }}"
+  register: libexecOpensshSftpserver_file_stat
+
+- name:  AV.1.8.2.33 - Display file status of {{ libexecOpensshSftpserver }}
+  debug: msg="{{ libexecOpensshSftpserver }} {{ ' file found on the end point' if libexecOpensshSftpserver_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+- name: AV.1.8.2.33 - Changing {{ libexecOpensshSftpserver }} file permissions
+  file: dest={{ libexecOpensshSftpserver }} mode={{ libexecOpensshSftpserverMode }}
+  when: libexecOpensshSftpserver_file_stat.stat.exists and setlibexecOpensshSftpserverMode
+
+
+#AV.1.8.2.34 - task 70
+
+- stat:
+     path: "{{ libexecOpensshSshkeysign }}"
+  register: libexecOpensshSshkeysign_file_stat
+
+- name:  AV.1.8.2.34 - Display file status of {{ libexecOpensshSshkeysign }}
+  debug: msg="{{ libexecOpensshSshkeysign }} {{ ' file found on the end point' if libexecOpensshSshkeysign_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+- name: AV.1.8.2.34 - Changing {{ libexecOpensshSshkeysign }} file permissions
+  file: dest={{ libexecOpensshSshkeysign }} mode={{ libexecOpensshSshkeysignMode }}
+  when: libexecOpensshSshkeysign_file_stat.stat.exists and setlibexecOpensshSshkeysignMode 
+
+
+# AV.1.8.2.35 - task 71
+
+- stat:
+     path: "{{ libexecOpensshSshaskpass }}"
+  register: libexecOpensshSshaskpass_file_stat
+
+- name:  AV.1.8.2.35 - Display file status of {{ libexecOpensshSshaskpass }}
+  debug: msg="{{ libexecOpensshSshaskpass }} {{ ' file found on the end point' if libexecOpensshSshaskpass_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+- name: AV.1.8.2.35 - Changing {{ libexecOpensshSshaskpass }} file permissions
+  file: dest={{ libexecOpensshSshaskpass }} mode={{ libexecOpensshSshaskpassMode }}
+  when: libexecOpensshSshaskpass_file_stat.stat.exists and setlibexecOpensshSshaskpassMode
+
+
+#AV.1.8.2.36 - task 72
+
+- stat:
+     path: "{{ libexecSftpserver }}"
+  register: libexecSftpserver_file_stat
+
+- name:  AV.1.8.2.36 - Display file status of {{ libexecSftpserver }}
+  debug: msg="{{ libexecSftpserver }} {{ ' file found on the end point' if libexecSftpserver_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+- name: AV.1.8.2.36 - Changing {{ libexecSftpserver }} file permissions
+  file: dest={{ libexecSftpserver }} mode={{ libexecSftpserverMode }}
+  when: libexecSftpserver_file_stat.stat.exists and setlibexecSftpserverMode
+
+
+#AV.1.8.2.37 - task 73
+
+- stat:
+     path: "{{ libexecSshkeysign }}"
+  register: libexecSshkeysign_file_stat
+
+- name:  AV.1.8.2.37 - Display file status of {{ libexecSshkeysign }}
+  debug: msg="{{ libexecSshkeysign }} {{ ' file found on the end point' if libexecSshkeysign_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+- name: AV.1.8.2.37 - Changing {{ libexecSshkeysign }} file permissions
+  file: dest={{ libexecSshkeysign }} mode={{ libexecSshkeysignMode }}
+  when: libexecSshkeysign_file_stat.stat.exists and setlibexecSshkeysignMode
+
+
+#AV.1.8.2.38 task 74
+
+- stat:
+     path: "{{ libexecSshrandhelper }}"
+  register: libexecSshrandhelper_file_stat
+
+- name:  AV.1.8.2.38 - Display file status of {{ libexecSshrandhelper }}
+  debug: msg="{{ libexecSshrandhelper }} {{ ' file found on the end point' if libexecSshrandhelper_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+- name: AV.1.8.2.38 - Changing {{ libexecSshrandhelper }} file permissions
+  file: dest={{ libexecSshrandhelper }} mode={{ libexecSshrandhelperMode }}
+  when: libexecSshrandhelper_file_stat.stat.exists and setlibexecSshrandhelperMode
+
+
+#AV.1.8.2.39 - task 75
+
+- stat:
+     path: "{{ libexecOpensshSftpserver2 }}"
+  register: libexecOpensshSftpserver_file_stat
+
+- name:  AV.1.8.2.39 - Display file status of {{ libexecOpensshSftpserver2 }}
+  debug: msg="{{ libexecOpensshSftpserver2 }} {{ ' file found on the end point' if libexecOpensshSftpserver_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}"
+
+
+- name: AV.1.8.2.39 - Changing {{ libexecOpensshSftpserver2 }} file permissions
+  file: dest={{ libexecOpensshSftpserver2 }} mode={{ libexecOpensshSftpserver2Mode }}
+  when: libexecOpensshSftpserver_file_stat.stat.exists and setlibexecOpensshSftpserver2Mode
+
+
+#AV.1.8.2.40 - task 76
+
+- stat:
+     path: "{{ libexecOpensshSshkeysign2 }}"
+  register: libexecOpensshSshkeysign_file_stat
+
+- name: AV.1.8.2.40 - Display file status of {{ libexecOpensshSshkeysign2 }}
+  debug: msg="{{ libexecOpensshSshkeysign2 }} {{ ' file found on the end point' if libexecOpensshSshkeysign_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AV.1.8.2.40 - Changing {{ libexecOpensshSshkeysign2 }} file permissions
+  file: dest={{ libexecOpensshSshkeysign2 }} mode={{ libexecOpensshSshkeysign2Mode }}
+  when: libexecOpensshSshkeysign_file_stat.stat.exists and setlibexecOpensshSshkeysign2Mode
+
+
+# AV.1.8.2.41 - task 77
+
+- stat:
+     path: "{{ libexecOpensshSshaskpass2 }}"
+  register: libexecOpensshSshaskpass_file_stat
+
+- name: AV.1.8.2.41 - Display file status of {{ libexecOpensshSshaskpass2 }}
+  debug: msg="{{ libexecOpensshSshaskpass2}} {{ ' file found on the end point' if libexecOpensshSshaskpass_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AV.1.8.2.41 - Changing {{ libexecOpensshSshaskpass2 }} file permissions
+  file: dest={{ libexecOpensshSshaskpass2 }} mode={{ libexecOpensshSshaskpass2Mode }}
+  when: libexecOpensshSshaskpass_file_stat.stat.exists and setlibexecOpensshSshaskpass2Mode
+
+
+# AV.1.8.2.42 - task 78
+
+- stat:
+     path: "{{ libexecSftpserver2 }}"
+  register: libexecSftpserver_file_stat
+
+- name: AV.1.8.2.42 - Display file status of {{ libexecSftpserver2 }}
+  debug: msg="{{ libexecSftpserver2}} {{ ' file found on the end point' if libexecSftpserver_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AV.1.8.2.42 - Changing {{ libexecSftpserver2 }} file permissions
+  file: dest={{ libexecSftpserver2 }} mode={{ libexecSftpserver2Mode }}
+  when: libexecSftpserver_file_stat.stat.exists and setlibexecSftpserver2Mode
+
+
+#AV.1.8.2.43 - task 79
+
+- stat:
+     path: "{{ libexecSshkeysign2 }}"
+  register: libexecSshkeysign2_file_stat
+
+- name: AV.1.8.2.43 - Display file status of {{ libexecSshkeysign2 }}
+  debug: msg="{{ libexecSshkeysign2}}  {{ ' file found on the end point' if libexecSshkeysign2_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AV.1.8.2.43 - Changing {{ libexecSshkeysign2 }} file permissions
+  file: dest={{ libexecSshkeysign2 }} mode={{ libexecSshkeysign2Mode }}
+  when: libexecSshkeysign2_file_stat.stat.exists and setlibexecSshkeysign2Mode
+
+
+#AV.1.8.2.44 - task 80
+
+- stat:
+     path: "{{ libexecSshrandhelper2 }}"
+  register: libexecSshrandhelper_file_stat
+
+- name: AV.1.8.2.44 - Display file status of {{ libexecSshrandhelper2 }}
+  debug: msg="{{ libexecSshrandhelper2}}  {{ ' file found on the end point' if libexecSshrandhelper_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AV.1.8.2.44 - Changing {{ libexecSshrandhelper2 }} file permissions
+  file: dest={{ libexecSshrandhelper2 }} mode={{ libexecSshrandhelper2Mode }}
+  when: libexecSshrandhelper_file_stat.stat.exists and setlibexecSshrandhelper2Mode
+
+
+#AV.1.8.2.45 - task 81
+
+- stat:
+     path: "{{ sbinSshd }}"
+  register: sbinSshd_file_stat
+
+- name: AV.1.8.2.45 - Display file status of {{ sbinSshd }}
+  debug: msg="{{ sbinSshd }} {{ ' file found on the end point' if sbinSshd_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AV.1.8.2.45 - Changing {{ sbinSshd }} file permissions
+  file: dest={{ sbinSshd }} mode={{ sbinSshdMode }}
+  when: sbinSshd_file_stat.stat.exists and setsbinSshdMode
+
+
+#AV.1.8.2.46 - task 82
+
+- stat:
+     path: "{{ sbinSshd2 }}"
+  register: sbinSshd2_file_stat
+
+- name: AV.1.8.2.46 - Display file status of {{ sbinSshd2 }}
+  debug: msg="{{ sbinSshd2 }} {{ ' file found on the end point' if sbinSshd2_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AV.1.8.2.46 - Changing {{ sbinSshd2 }} file permissions
+  file: dest={{ sbinSshd2 }} mode={{ sbinSshd2Mode }}
+  when: sbinSshd2_file_stat.stat.exists and setsbinSshd2Mode
+
+
+#AV.1.8.2.47 - task 83
+
+- stat:
+     path: "{{ sbinSshdcheckconf }}"
+  register: sbinSshdcheckconf_file_stat
+
+- name: AV.1.8.2.47 - Display file status of {{ sbinSshdcheckconf }}
+  debug: msg="{{ sbinSshdcheckconf }} {{ ' file found on the end point' if sbinSshdcheckconf_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AV.1.8.2.47 - Changing {{ sbinSshdcheckconf }} file permissions
+  file: dest={{ sbinSshdcheckconf }} mode={{ sbinSshdcheckconfMode }}
+  when: sbinSshdcheckconf_file_stat.stat.exists and setsbinSshdcheckconfMode
+
+
+#AV.1.8.2.49 - task 84
+
+- stat:
+     path: "{{ libSvcMethodSshd }}"
+  register: libSvcMethodSshd_file_stat
+
+- name: AV.1.8.2.49 - Display file status of {{ libSvcMethodSshd }}
+  debug: msg="{{ libSvcMethodSshd }} {{ ' file found on the end point' if libSvcMethodSshd_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AV.1.8.2.49 - Changing {{ libSvcMethodSshd }} file permissions
+  file: dest={{ libSvcMethodSshd }} mode={{ libSvcMethodSshdMode }}
+  when: libSvcMethodSshd_file_stat.stat.exists and setlibSvcMethodSshdMode
+
+
+#AV.1.8.2.50 - task 85
+
+- stat:
+     path: "{{ usrLibSshSshd }}"
+  register: usrLibSshSshd_file_stat
+
+- name: AV.1.8.2.50 - Display file status of {{ usrLibSshSshd }}
+  debug: msg="{{ usrLibSshSshd }} {{ ' file found on the end point' if usrLibSshSshd_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AV.1.8.2.50 - Changing {{ usrLibSshSshd }} file permissions
+  file: dest={{ usrLibSshSshd }} mode={{ usrLibSshSshdMode }}
+  when: usrLibSshSshd_file_stat.stat.exists and setusrLibSshSshdMode
+
+
+#AV.1.8.3.1 - task 86
+
+- stat:
+     path: "{{ etcopensshSshdConfig }}"
+  register: etcopensshSshdConfig_file_stat
+
+- name: V.1.8.3.1 - Display file status of {{ etcopensshSshdConfig }}
+  debug: msg="{{ etcopensshSshdConfig }} {{ ' file found on the end point' if etcopensshSshdConfig_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: V.1.8.3.1 - Changing {{ etcopensshSshdConfig }} file permissions
+  file: dest={{ etcopensshSshdConfig }} mode={{ etcopensshSshdConfigMode }}
+  when: etcopensshSshdConfig_file_stat.stat.exists and setetcopensshSshdConfigMode
+
+
+#AV.1.8.3.2 - task 87
+
+- stat:
+     path: "{{ SSH_CONFIG_FILE }}"
+  register: etcSshSshdConfig_file_stat
+
+- name: display file status of {{ SSH_CONFIG_FILE }}
+  debug: msg="{{ SSH_CONFIG_FILE }} {{ ' file found on the end point' if etcSshSshdConfig_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+- name: Changing {{ SSH_CONFIG_FILE }} file permissions
+  file: dest={{ SSH_CONFIG_FILE }} mode={{ etcSshSshdConfigMode }}
+  when: etcSshSshdConfig_file_stat.stat.exists and setetcSshSshdConfigMode
+
+#AV.1.8.3.3 - task 88
+
+- stat:
+     path: "{{ etcSshSshd2config }}"
+  register: etcSshSshd2config_file_stat
+
+- name: AV.1.8.3.3  - Display file status of {{ etcSshSshd2config }}
+  debug: msg="{{ etcSshSshd2config }} {{ ' file found on the end point' if etcSshSshd2config_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AV.1.8.3.3 - Changing {{ etcSshSshd2config }} file permissions
+  file: dest={{ etcSshSshd2config }} mode={{ etcSshSshd2configMode }}
+  when: etcSshSshd2config_file_stat.stat.exists and setetcSshSshd2configMode
+
+
+#AV.1.8.3.4 - task 89
+
+- stat:
+     path: "{{ etcSsh2Sshdconfig }}"
+  register: etcSsh2Sshdconfig_file_stat
+
+- name: AV.1.8.3.4 - Display file status of {{ etcSsh2Sshdconfig }}
+  debug: msg="{{ etcSsh2Sshdconfig }} {{ ' file found on the end point' if etcSsh2Sshdconfig_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AV.1.8.3.4 - Changing {{ etcSsh2Sshdconfig }} file permissions
+  file: dest={{ etcSsh2Sshdconfig }} mode={{ etcSsh2SshdconfigMode }}
+  when: etcSsh2Sshdconfig_file_stat.stat.exists and setetcSsh2SshdconfigMode
+
+
+#AV.1.8.3.5 - task 90
+
+- stat:
+     path: "{{ etcSsh2Sshd2config }}"
+  register: etcSsh2Sshd2config_file_stat
+
+- name: AV.1.8.3.5 - Display file status of {{ etcSsh2Sshd2config }}
+  debug: msg="{{ etcSsh2Sshd2config }} {{ ' file found on the end point' if etcSsh2Sshd2config_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AV.1.8.3.5 - Changing {{ etcSsh2Sshd2config }} file permissions
+  file: dest={{ etcSsh2Sshd2config }} mode={{ etcSsh2Sshd2configMode }}
+  when: etcSsh2Sshd2config_file_stat.stat.exists and setetcSsh2Sshd2configMode
+
+
+#AV.1.8.3.6 - task 91
+
+- stat:
+     path: "{{ etcSshdconfig }}"
+  register: etcSshdconfig_file_stat
+
+- name: V.1.8.3.6 - Display file status of {{ etcSshdconfig }}
+  debug: msg="{{ etcSshdconfig }} {{ ' file found on the end point' if etcSshdconfig_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+- name: V.1.8.3.6 - Changing {{ etcSshdconfig }} file permissions
+  file: dest={{ etcSshdconfig }} mode={{ etcSshdconfigMode }}
+  when: etcSshdconfig_file_stat.stat.exists and setetcSshdconfigMode
+
+
+#AV.1.8.3.7 - task 92
+
+- stat:
+     path: "{{ etcSshd2config }}"
+  register: etcSshd2config_file_stat
+
+- name: AV.1.8.3.7 - Display file status of {{ etcSshd2config }}
+  debug: msg="{{ etcSshd2config }} {{ ' file found on the end point' if etcSshd2config_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AV.1.8.3.7 - Changing {{ etcSshd2config }} file permissions
+  file: dest={{ etcSshd2config }} mode={{ etcSshd2configMode }}
+  when: etcSshd2config_file_stat.stat.exists and setetcSshd2configMode
+
+
+#AV.1.8.3.8 - task 93
+
+- stat:
+     path: "{{ usrLocalEtcSshconfig }}"
+  register: usrLocalEtcSshconfig_file_stat
+
+- name: AV.1.8.3.8 - Display file status of {{ usrLocalEtcSshconfig }}
+  debug: msg="{{ '{{ usrLocalEtcSshconfig }} file found on the end point' if usrLocalEtcSshconfig_file_stat.stat.exists else '{{ usrLocalEtcSshconfig }} file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AV.1.8.3.8 - Changing {{ usrLocalEtcSshconfig }} file permissions
+  file: dest={{ usrLocalEtcSshconfig }} mode={{ usrLocalEtcSshconfigMode }}
+  when: usrLocalEtcSshconfig_file_stat.stat.exists and setusrLocalEtcSshconfigMode
+
+
+#AV.1.8.3.9 - task 94
+
+- stat:
+     path: "{{ usrLocalEtcSshd2config }}"
+  register: usrLocalEtcSshd2config_file_stat
+
+- name: AV.1.8.3.9 - Display file status of {{ usrLocalEtcSshd2config }}
+  debug: msg="{{ usrLocalEtcSshd2config }} {{ ' file found on the end point' if usrLocalEtcSshd2config_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AV.1.8.3.9 - Changing {{ usrLocalEtcSshd2config }} file permissions
+  file: dest={{ usrLocalEtcSshd2config }} mode={{ usrLocalEtcSshd2configMode }}
+  when: usrLocalEtcSshd2config_file_stat.stat.exists and setusrLocalEtcSshd2configMode
+
+
+# AV.1.8.3.10 - task 95
+
+- stat:
+     path: "{{ usrLibSshSshkeysign }}"
+  register: usrLibSshSshkeysign_file_stat
+
+
+- name: AV.1.8.3.10 - Display file status of {{ usrLibSshSshkeysign }}
+  debug: msg="{{ usrLibSshSshkeysign }} {{ ' file found on the end point' if usrLibSshSshkeysign_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AV.1.8.3.10 - Changing {{ usrLibSshSshkeysign }} file permissions
+  file: dest={{ usrLibSshSshkeysign }} mode={{ usrLibSshSshkeysignMode }}
+  when: usrLibSshSshkeysign_file_stat.stat.exists and setusrLibSshSshkeysignMode
+
+
+
+# AV.1.9.1 Task 96 (Ssh Permit User Environment)
+
+- name: AV.1.9.1 - Replace line in ssh config file to set PermitUserEnvironment to no
+  replace:
+    path: '{{SSH_CONFIG_FILE}}'
+    regexp: '^(.*)PermitUserEnvironment(.*)$'
+    replace: '{{SSH_PERMITUSERENV}}'
+  when: sshd_config_stat.stat.exists and SetSSH_PERMITUSERENV
+
+- name: AV.1.9.1 - Check line in ssh config file to set GatewayPorts to no
+  shell: grep ^PermitUserEnvironment {{SSH_CONFIG_FILE}} | cat
+  register: CHECK_SSH_PERMITUSERENV_SET
+  when: sshd_config_stat.stat.exists
+  check_mode: no
+
+- name: AV.1.9.1 - Insert line in ssh config file to set GatewayPorts to no if not exist
+  lineinfile:
+    dest: '{{ SSH_CONFIG_FILE }}'
+    line:  '{{ SSH_PERMITUSERENV }}'
+  when: CHECK_SSH_PERMITUSERENV_SET.stdout_lines != "" and sshd_config_stat.stat.exists and SetSSH_PERMITUSERENV
+
+# AV.1.9.2 - task 97 (Ssh Strict Modes)
+- name: AV.1.9.2 -Replace line in ssh config file to set Strict Modes to yes
+  replace:
+    path: '{{SSH_CONFIG_FILE}}'
+    regexp: '^(.*)StrictModes(.*)$'
+    replace: '{{SSH_STRICTMODES}}'
+  when: sshd_config_stat.stat.exists and SetSSH_STRICTMODES
+
+
+- name: AV.1.9.2 - Check  line in ssh config file to set Strict Modes to yes
+  shell: grep ^StrictModes {{SSH_CONFIG_FILE}} | cat
+  register: CHECK_SSH_STRICTMODES_SET
+  when: sshd_config_stat.stat.exists
+  check_mode: no
+
+- name: AV.1.9.2 -Insert line in ssh config file to set Strict Modes to yes if not exist
+  lineinfile:
+    dest: '{{ SSH_CONFIG_FILE }}'
+    line:  '{{ SSH_STRICTMODES }}'
+  when: CHECK_SSH_STRICTMODES_SET.stdout_lines != "" and sshd_config_stat.stat.exists and SetSSH_STRICTMODES
+
+# AV.1.9.3 - task 98 (Ssh Accept Environment)
+
+- name: AV.1.9.3 - Restrict ssh access by resetting AcceptEnv 
+  replace:
+    path: '{{SSH_CONFIG_FILE}}'
+    regexp: '^(.*)AcceptEnv(.*)$'
+    replace: '{{SSH_ACCEPTENV}}'
+  when: sshd_config_stat.stat.exists and SetSSH_ACCEPTENV
+
+- name: AV.1.9.3 - Check AcceptEnv line in ssh config 
+  shell: grep ^AcceptEnv {{SSH_CONFIG_FILE}} | cat
+  register: CHECK_SSH_ACCEPTENV_SET
+  when: sshd_config_stat.stat.exists
+  check_mode: no
+
+- name: AV.1.9.3 - Insert line in ssh config file to set AcceptEnv to no if not exist
+  lineinfile:
+    dest: '{{ SSH_CONFIG_FILE }}'
+    line:  '{{ SSH_ACCEPTENV }}'
+  when: CHECK_SSH_ACCEPTENV_SET.stdout_lines != "" and sshd_config_stat.stat.exists and SetSSH_ACCEPTENV
+

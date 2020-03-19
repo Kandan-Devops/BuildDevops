@@ -1,0 +1,504 @@
+#Flag variables for task execution confirmation
+# true to execute task , false to skip task
+CONFIGURE_PASSWORD_PARAM_ISRUN: true
+LOGGING_ISRUN: true
+NETWORK_CONF_ISRUN: true
+PROTECTING_RESOURCES_ISRUN: true
+
+
+# password settings variable ---------------------------------
+shell_script_path: roles/linux/tasks/
+shell_script_destination: /tmp
+
+#task AD.1.1.1.1
+PASS_MAX_DAYS: PASS_MAX_DAYS    180
+SET_PASS_MAX_DAYS: true
+
+# AD.1.1.3.1
+PASS_MIN_DAYS: PASS_MIN_DAYS    1
+SET_PASS_MIN_DAYS: true
+
+#AD.1.1.2
+PASS_MIN_LENGTH: PASS_MIN_LEN   14
+SET_PASS_MIN_LENGTH: true
+
+#AD.1.1.1.2 task2 
+set_passwd_maxnmin_age_sh: set_passwd_maxnmin_age.sh
+PASS_MAX_DAY: 180
+SET_PASS_MAX_DAY: true
+
+#AD.1.1.3.2 task 6
+PASS_MIN_DAY: 1
+SET_PASS_MIN_DAY: true
+
+#task 23
+#REPLACE_NOLOGIN: /sbin/nologin
+#SET_NOLOGIN: false
+
+# AD.1.1.13.4 task 34
+UsePAM: UsePAM yes
+SET_UsePAM: true
+
+# task 49 AD.1.4.2- Restrict root ftp access
+set_restrict_root_ftp_access: true
+
+#password setting file path
+
+#task 4, 7 and 13 and 30 
+system_auth_path: /etc/pam.d/system-auth
+password_auth_path: /etc/pam.d/password-auth
+FIND_PAM_MODULE: cat /etc/pam.d/password-auth |grep ^password |egrep 'required|requisite' |egrep 'pam_cracklib.so|pam_passwdqc.so|pam_pwquality.so' |awk '{print $3}' |uniq
+templatePAMFiles: false
+
+pam_cracklib_so_password_auth_j2: roles/linux/templates/pam/pam_cracklib.so_password-auth.j2
+pam_cracklib_so_system_auth_j2: roles/linux/templates/pam/pam_cracklib.so_system-auth.j2
+
+pam_passwdqc_so_password_auth_j2: roles/linux/templates/pam/pam_passwdqc.so_password-auth.j2
+pam_passwdqc_so_system_auth_j2: roles/linux/templates/pam/pam_passwdqc.so_system-auth.j2
+
+pam_pwquality_so_password_auth_j2: roles/linux/templates/pam/pam_pwquality.so_password-auth.j2
+pam_pwquality_so_system_auth_j2: roles/linux/templates/pam/pam_pwquality.so_system-auth.j2
+
+#AD.1.1.7.2- template securetty file
+securetty_file_path: /etc/securetty
+securetty_file_path_j2: roles/linux/templates/securetty.j2
+template_securetty_file: true 
+
+#AD.1.1.10.2
+ftpusers_file_path: /etc/ftpusers
+vsftpd_ftpusers_file_path: /etc/vsftpd.ftpusers
+set_root_on_ftpusers: true
+
+
+login_def_file_path: /etc/login.defs
+shadow_file_path: /etc/shadow
+passwd_file_path: /etc/passwd
+sshd_config_file_path: /etc/ssh/sshd_config
+
+#task 172 AD.2.0.1- Logon screens Business Use Notice
+
+business_Use_Notice_motd: /etc/motd
+business_Use_Notice_issue: /etc/issue
+
+business_Use_Notice_motd_j2: roles/linux/templates/motd.j2
+business_Use_Notice_issue_j2: roles/linux/templates/motd.j2
+
+set_logon_business_Use_Notice: true
+
+#Logging
+
+#AD.1.2.2
+#wtmp: /var/log/wtmp
+create_wtmp: true
+
+#AD.1.2.3.1
+#msgs: /var/log/messages
+create_messages: true
+
+#AD.1.2.3.2
+#syslog: /var/log/syslog
+create_syslog: false
+
+#AD.1.2.4.1
+#faillog: /var/log/faillog
+create_faillog: true
+
+#AD.1.2.4.2
+tallylog: /var/log/tallylog
+tallylogMode: 0644
+create_tallylog: true
+
+#AD.1.2.5
+secure: /var/log/secure
+create_secure: true
+
+auth: /var/log/auth.log
+create_auth_log: true
+
+# AD.1.2.6 task 46
+logrotate: /etc/logrotate.conf
+
+logrotate_msg: rotate 15
+set_logrotate_msg: true
+
+logrotate_format: weekly 
+set_logrotate_format: true
+
+
+# AD.1.2.1.1 task 35
+syslog_conf:
+- { dest: "/etc/syslog.conf", regexp: '^(.*)info;mail.none;authpriv.none;cron.none(.*)$',  line: "*.info;mail.none;authpriv.none;cron.none /var/log/messages"}
+- { dest: "/etc/syslog.conf", regexp: '^authpriv(.*)$',  line: "authpriv.* /var/log/secure"}
+
+set_syslog_conf: true
+
+rsyslog_conf:
+- { dest: "/etc/rsyslog.conf", regexp: '^(.*)ActionFileDefaultTemplate RSYSLOG_(.*)$',  line: "$ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat"}
+- { dest: "/etc/rsyslog.conf", regexp: '^(.*)info;mail.none;authpriv.none;cron.none(.*)$',  line: "*.info;mail.none;authpriv.none;cron.none /var/log/messages"}
+- { dest: "/etc/rsyslog.conf", regexp: '^authpriv(.*)$',  line: "authpriv.* /var/log/secure"}
+
+set_rsyslog_conf: true
+
+syslog_ng:
+- { dest: "/etc/syslog-ng/syslog-ng.conf", regexp: '^filter f_authpriv(.*)$',  line: "filter f_authpriv { facility(auth,authpriv); };"}
+- { dest: "/etc/syslog-ng/syslog-ng.conf", regexp: '^destination authpriv(.*)$',  line: "destination authpriv { file(/var/log/secure); };"}
+- { dest: "/etc/syslog-ng/syslog-ng.conf", regexp: '^(.*)source(src); filter(f_authpriv)(.*)$',  line: "log { source(src); filter(f_authpriv); destination(authpriv); };"}
+
+set_syslog_ng: true
+
+rsyslog:
+- { dest: "/etc/rsyslog.conf", regexp: '^filter f_authpriv(.*)$',  line: "filter f_authpriv { facility(authpriv); };"}
+- { dest: "/etc/rsyslog.conf", regexp: '^destination authpriv(.*)$',  line: "destination authpriv { file(/var/log/secure;RSYSLOG_TraditionalFileFormat); };"}
+- { dest: "/etc/rsyslog.conf", regexp: '^source src { internal()(.*)$',  line: "source src { internal(); };"}
+- { dest: "/etc/rsyslog.conf", regexp: '^(.*) source(src); filter(f_authpriv)(.*)$',  line: "log { source(src); filter(f_authpriv); destination(authpriv); };"}
+
+set_rsyslog: true
+
+
+#Network Config Variables
+#AD.1.5.9.20, AD.1.5.9.21, AD.1.5.9.22 : task 97, 98 , 99  Secure network
+
+syncookies: net.ipv4.tcp_syncookies = 1
+set_syncookies: true
+
+
+icmp_broadcasts: net.ipv4.icmp_echo_ignore_broadcasts = 1
+set_icmp_broadcasts: true
+
+network_redirects: net.ipv4.conf.all.accept_redirects = 0
+set_network_redirects: true
+
+delete_hosts_equiv_file: true
+set_no_hosts_equiv: true
+
+network_services_list: environments/sla/group_vars/network_services/services
+disableNetworkServices_Rhel6_sh: disableNetworkServices_Rhel6.sh
+disableNetworkServices_Rhel7_sh: disableNetworkServices_Rhel7.sh
+
+
+#Disable services
+disable_services:
+- "daytime"
+- "systat"
+- "netstat"
+- "nfs-kernel-server"
+- "chargen"
+- "discard"
+- "echo"
+- "finger"
+- "rwho"
+- "rstatd"
+- "tftp"
+- "rwalld"
+- "rusersd"
+- "discard"
+- "bootps"
+- "sprayd"
+- "pcnfsd"
+- "cmsd"
+- "dtspcd"
+- "ttdbserver"
+- "telnet"
+- "vsftpd"
+- "rexd"
+- "nis"
+
+comment_Listed_Services: false
+set_Disable_Services: false
+
+#AD.1.5.3.1 task 63
+set_exports_file_owner: true
+
+#Network Settings file path
+exports_file_path: /etc/exports
+vsftpd_conf_file_path: /etc/vsftpd.conf
+hosts_equiv_file_path: /etc/hosts.equiv
+rlogin_file_path: /etc/pam.d/rlogin
+sysctl_file_path: /etc/sysctl.conf
+
+services_file_path: /etc/services
+
+#.....................................Protecting Resource Variable ..........................................................................
+
+# AD.1.8.2.1  task 111
+rhosts_filePath: /root/.rhosts
+rhosts_fileMode: 0600
+setrhosts_fileMode: true
+
+# AD.1.8.2.2 task 112
+netrc_filePath: /root/.netrc
+netrc_fileMode: 0600
+setnetrc_fileMode: true
+
+# AD.1.8.3.2 task 114
+usrDirectory: /usr
+usrDirectoryMode: 0755
+setusrDirectoryMode: true
+
+#AD.1.8.3.3 task 115
+etcDirectory: /etc
+etcDirectoryMode: 0755
+setetcDirectoryMode: true
+
+#AD.1.8.4.1 task 116
+opasswdFile: /etc/security/opasswd
+opasswdFileMode: 0600
+setopasswdFileMode: true
+
+#AD.1.8.4.2 task 117
+shadowFile: /etc/shadow
+shadowFileMode: 0600
+setshadowFileMode: true
+
+# AD.1.8.5.1 task 118
+varDirectory: /var
+varDirectoryMode: 0755
+setvarDirectoryMode: true
+
+#AD.1.8.5.2 task 119
+varLogDirectory: /var/log
+varLogDirectoryMode: 0755
+setvarLogDirectoryMode: true
+
+# AD.1.8.6.1 and AD.1.8.12.1.1 : task 120 and 128
+varFailLogFile: /var/log/faillog
+varFailLogFileMode: 0600
+setvarFailLogFileMode: true
+
+# AD.1.8.6.2 task 121
+tallyLogDirectory: /var/log/tallylog
+tallyLogDirectoryMode: 0600
+settallyLogDirectoryMode: true
+
+
+#AD.1.8.7.1 task 122 - Duplicate of 130
+#varLogMessages: /var/log/messages
+#varLogSyslog: /var/log/syslog
+
+# AD.1.8.7.2 task 123 - Duplicate of 131
+#varLogWtmp: /var/log/wtmp
+#varLogWtmpMode: 0755
+
+#AD.1.8.8 task 124
+varLogSecure: /var/log/secure
+varLogSecureMode: 0600
+setvarLogSecureMode: true
+
+varLogAuth: /var/log/auth.log
+varLogAuthMode: 0600
+setvarLogAuthMode: true
+
+#task 125
+#tmpDirectory1: /tmp
+#tmpDirectoryMode1: u=rwx,g=rwx,o=rwx,+t
+
+# task 126:  AD.1.8.10 - Restrict permission of snmp.conf
+setSnmpPermission: true
+
+#AD.1.8.11 - task 127
+varTmpDirectory: /var/tmp
+varTmpDirectoryMode: u=rwx,g=rwx,o=rwx,+t
+setvarTmpDirectoryMode: true
+
+#task 128
+#varFailLogFile2: /var/log/faillog
+#varFailLogFileMode2: 0600
+
+#AD.1.8.12.1.2 task 129
+varLogTallyLogFile: /var/log/tallylog
+varLogTallyLogFileMode: 0600
+setvarLogTallyLogFileMode: true
+
+#AD.1.8.12.2 - task 130
+varLogMessages: /var/log/messages
+varLogMessagesMode: 0644
+setvarLogMessagesMode: true
+
+varLogSyslog: /var/log/syslog
+varLogSyslogMode: 0640
+setvarLogSyslogMode: true
+
+#AD.1.8.12.3 - task 131
+varLogWtmp: /var/log/wtmp
+varLogWtmpMode: 0664
+setvarLogWtmpMode: true
+
+#AD.1.8.12.4 task 132
+varLogSecure1: /var/log/secure
+varLogSecure1Mode: 0640
+setvarLogSecure1Mode: true
+
+#AD.1.8.12.5 task 133
+varLogAuth1: /var/log/auth.log
+varLogAuthMode1: 0600
+setvarLogAuthMode1: true
+
+#AD.1.8.12.6, AD.1.8.12.7 , AD.1.9.1.3 and  AD.1.9.1.4 : task  134 - 135 and 167 - 168
+IBMsinitDotshj2: roles/linux/templates/IBMsinit/sh/IBMsinit.j2
+IBMsinitDotsh: /etc/profile.d/IBMsinit.sh
+IBMsinitDotshMode: 0755
+setIBMsinitDotsh: true
+
+#AD.1.8.12.7 and AD.1.9.1.3 : task 135, 167
+IBMsinitDotcshj2: roles/linux/templates/IBMsinit/csh/IBMsinit.j2
+IBMsinitDotcsh: /etc/profile.d/IBMsinit.csh
+IBMsinitDotcshMode: 0755
+setIBMsinitDotcsh: true
+
+#AD.1.8.13.2, AD.1.8.13.3 and AD.1.8.13.4 : task 138-140
+etcInitTabFile: /etc/inittab
+etcInitTabFileMode: 0644
+setetcInitTabFileMode: true
+
+#AD.1.8.14.1, AD.1.8.14.2 and AD.1.8.14.3: task 141-143
+varSpoolCronRootFile: /var/spool/cron/root
+varSpoolCronRootFileMode: 0600
+setvarSpoolCronRootFileMode: true
+
+#AD.1.8.15.1, AD.1.8.15.2 and AD.1.8.15.3 : task 144 - 146
+etcCrontabDirectory: /etc/crontab
+etcCrontabDirectoryMode: 0644
+setetcCrontabDirectoryMode: true
+
+# AD.1.8.17.1, AD.1.8.17.2 and AD.1.8.17.3task 147 - 149
+etcXinetdDotConfFile: /etc/xinetd.conf
+etcXinetdDotConfFileMode: 0600
+setetcXinetdDotConfFileMode: true
+
+# AD.1.8.18.2- AD.1.8.18.3 : task 150-151
+etcInitDotDRc0DotDFile: /etc/init.d/rc0.d
+etcInitDotDRc0DotDFileMode: 0755
+setetcInitDotDRc0DotDFileMode: true
+
+etcInitDotDRc1DotDFile: /etc/init.d/rc1.d
+etcInitDotDRc1DotDFileMode: 0755
+setetcInitDotDRc1DotDFileMode: true
+
+etcInitDotDRc2DotDFile: /etc/init.d/rc2.d
+etcInitDotDRc2DotDFileMode: 0755
+setetcInitDotDRc2DotDFileMode: true
+
+etcInitDotDRc3DotDFile: /etc/init.d/rc3.d
+etcInitDotDRc3DotDFileMode: 0755
+setetcInitDotDRc3DotDFileMode: true
+
+etcInitDotDRc4DotDFile: /etc/init.d/rc4.d
+etcInitDotDRc4DotDFileMode: 0755
+setetcInitDotDRc4DotDFileMode: true
+
+etcInitDotDRc5DotDFile: /etc/init.d/rc5.d
+etcInitDotDRc5DotDFileMode: 0755
+setetcInitDotDRc5DotDFileMode: true
+
+etcInitDotDRc6DotDFile: /etc/init.d/rc6.d
+etcInitDotDRc6DotDFileMode: 0755
+setetcInitDotDRc6DotDFileMode: true
+
+etcInitDotDRcSDotDFile: /etc/init.d/rcS.d
+etcInitDotDRcSDotDFileMode: 0755
+setetcInitDotDRcSDotDFileMode: true
+
+
+etcRcDotDRc0DotDFile: /etc/rc.d/rc0.d
+etcRcDotDRc0DotDFileMode: 0755
+setetcRcDotDRc0DotDFileMode: true
+
+etcRcDotDRc1DotDFile: /etc/rc.d/rc1.d
+etcRcDotDRc1DotDFileMode: 0755
+setetcRcDotDRc1DotDFileMode: true
+
+etcRcDotDRc2DotDFile: /etc/rc.d/rc2.d
+etcRcDotDRc2DotDFileMode: 0755
+setetcRcDotDRc2DotDFileMode: true
+
+etcRcDotDRc3DotDFile: /etc/rc.d/rc3.d
+etcRcDotDRc3DotDFileMode: 0755
+setetcRcDotDRc3DotDFileMode: true
+
+etcRcDotDRc4DotDFile: /etc/rc.d/rc4.d
+etcRcDotDRc4DotDFileMode: 0755
+setetcRcDotDRc4DotDFileMode: true
+
+etcRcDotDRc5DotDFile: /etc/rc.d/rc5.d
+etcRcDotDRc5DotDFileMode: 0755
+setetcRcDotDRc5DotDFileMode: true
+
+etcRcDotDRc6DotDFile: /etc/rc.d/rc6.d
+etcRcDotDRc6DotDFileMode: 0755
+setetcRcDotDRc6DotDFileMode: true
+
+etcRcDotDRcSDotDFile: /etc/rc.d/rcS.d
+etcRcDotDRcSDotDFileMode: 0755
+setetcRcDotDRcSDotDFileMode: true
+
+
+#AD.1.8.19.2- AD.1.8.19.3 : task 152-153
+etcInitDotD: /etc/init.d
+etcInitDotDMode: 0755
+setetcInitDotDMode: true
+
+etcRcDotD: /etc/rc.d
+etcRcDotDMode: 0755
+setetcRcDotDMode: true
+
+#AD.1.8.20.1, AD.1.8.20.2 and AD.1.8.20.3 :task 154-156
+etcCronDotD: /etc/cron.d
+etcCronDotDMode: 0755
+setetcCronDotDMode: true
+
+#AD.1.8.21.1, AD.1.8.21.2 and AD.1.8.21.3 : task 157-159
+varSpoolCronTabRootFile: /var/spool/cron/tabs/root
+varSpoolCronTabRootFileMode: 0600
+setvarSpoolCronTabRootFileMode: true
+
+# AD.1.8.22.1 : task 160
+optDirectory: /opt
+optDirectoryMode: 0755
+setoptDirectoryMode: true
+
+
+# AD.1.8.22.3 : task 162
+usrLocalDirectory: /usr/local
+usrLocalDirectoryMode: 0755
+setusrLocalDirectoryMode: true
+
+#AD.1.8.22.4 task 163
+
+tmpDirectory: /tmp
+tmpDirectoryMode: u=rwx,g=rwx,o=rwx,+t
+settmpDirectoryMode: true
+
+# AD.1.9.1.2  task 165 >> umask 077 to be set in /etc/bashrc 
+bashrcFilePath: /etc/bashrc 
+bashrc_umask_value: umask 077
+setbashrcFilePath: true
+
+#AD.1.9.1.2.1 - task 166
+LOGINUMASK_VALUE: UMASK 077
+loginDotDefs: /etc/login.defs
+setloginDotDefs: true
+
+
+#AD.1.9.1.7 task 171
+UMASK_VALUE: umask 077
+
+cshrc: /etc/skel/.cshrc
+setUmaskOncshrc: true
+
+loginFile: /etc/skel/.login
+setUmaskOnloginFile: true
+
+profileFile: /etc/skel/.profile
+setUmaskOnprofileFile: true
+
+bashrc: /etc/skel/.bashrc
+setUmaskOnbashrc: true
+
+bashProfile: /etc/skel/.bash_profile
+setUmaskOnbashProfile: true
+
+bashLogin: /etc/skel/.bash_login
+setUmaskOnbashLogin: true
+
+tcshrc: /etc/skel/.tcshrc
+setUmaskOntcshrc: true

@@ -1,0 +1,12 @@
+# New as of 10 July 2014, as per ITCS104 Linux Tech Spec, Chapter 1
+# Version 12.0 - March 21, 2014
+
+if [ $UID -gt 199 ]; then
+umask 077
+fi
+
+unset TMOUT 2> /dev/null && TMOUT=1800
+
+readonly TMOUT
+
+export TMOUT

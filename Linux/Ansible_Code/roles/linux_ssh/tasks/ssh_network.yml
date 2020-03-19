@@ -1,0 +1,83 @@
+- stat:
+     path: '{{SSH_CONFIG_FILE}}'
+  register: sshd_config_stat
+
+- name: display file status of '{{SSH_CONFIG_FILE}}'
+  debug: msg="{{ SSH_CONFIG_FILE }} {{ ' file found on the end point' if sshd_config_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+#- include: "{{ './_common/check-certs-renewable.yaml' if st.stat.exists else './_common/create-certs.yaml' }}"
+
+
+# AV.1.5.1 task 17 (Ssh key regeneration interval)
+- name: AV.1.5.1 - replace line in ssh config file to set key regeneration interval to 3600 
+  replace:
+    path: '{{SSH_CONFIG_FILE}}'
+    regexp: '^(.*)KeyRegenerationInterval(.*)$'
+    replace: '{{SSH_KEYREGENERATIONINTERVAL}}'
+  when: sshd_config_stat.stat.exists and SetSSH_KEYREGENERATIONINTERVAL
+
+
+- name: AV.1.5.1- check line in ssh config file to set key regeneration interval to 3600 
+  shell: grep ^KeyRegenerationInterval {{SSH_CONFIG_FILE}} | cat
+  register: CHECK_SSH_KEYREGENERATIONINTERVAL_SET
+  when: sshd_config_stat.stat.exists
+  check_mode: no
+
+- name: AV.1.5.1- insert line in ssh config file to set key regeneration interval to 3600 if not exist
+  lineinfile:
+    dest: '{{SSH_CONFIG_FILE}}'
+    line:  '{{SSH_KEYREGENERATIONINTERVAL}}'
+  when: CHECK_SSH_KEYREGENERATIONINTERVAL_SET.stdout_lines != "" and sshd_config_stat.stat.exists and SetSSH_KEYREGENERATIONINTERVAL
+
+
+
+# AV.1.5.2 task 18  (Ssh protocol)
+- name:  AV.1.5.2 -replace line in ssh config file to set protocol change to 2
+  replace:
+    path: '{{SSH_CONFIG_FILE}}'
+    regexp: '^(.*)#?Protocol(.*)$'
+    replace: '{{SSH_PROTOCOL}}'
+  when: sshd_config_stat.stat.exists and Set_SSH_PROTOCOL
+
+- name:  AV.1.5.2 -check line in ssh config file to set protocol change to 2 
+  shell: grep ^Protocol {{SSH_CONFIG_FILE}} | cat
+  register: CHECK_SSH_PROTOCOL_SET
+  when: sshd_config_stat.stat.exists
+  check_mode: no
+
+- name:  AV.1.5.2 -insert line in ssh config file to set protocol change to 2 if not exist
+  lineinfile:
+    dest: '{{SSH_CONFIG_FILE}}'
+    line:  '{{SSH_PROTOCOL}}'
+  when: CHECK_SSH_PROTOCOL_SET.stdout_lines != "" and sshd_config_stat.stat.exists and Set_SSH_PROTOCOL
+
+
+# AV.1.5.3 task 19 (Ssh Gateway port)
+
+- name: AV.1.5.5- Update line in ssh config file to set GatewayPorts to no
+  replace:
+    path: '{{SSH_CONFIG_FILE}}'
+    regexp: '^(.*)GatewayPorts(.*)$'
+    replace: '{{SSH_GATEWAYPORTS}}'
+  when: sshd_config_stat.stat.exists and Set_SSH_GATEWAYPORTS
+
+- name: AV.1.5.5- check line in ssh config file to set GatewayPorts to no
+  shell: grep ^GatewayPorts {{SSH_CONFIG_FILE}} | cat
+  register: CHECK_SSH_GATEWAYPORTS_SET
+  when: sshd_config_stat.stat.exists
+  check_mode: no
+
+- name: AV.1.5.5- Insert line in ssh config file to set GatewayPorts to no if not exist
+  lineinfile:
+    dest: '{{ SSH_CONFIG_FILE }}'
+    line:  '{{ SSH_GATEWAYPORTS }}'
+  when: CHECK_SSH_GATEWAYPORTS_SET.stdout_lines != "" and sshd_config_stat.stat.exists and Set_SSH_GATEWAYPORTS
+
+
+#Restart SSH Service to reflect the above ssh network changes 
+- name: restarting ssh service to consider the above ssh network changes
+  service:
+      name: sshd
+      state: reloaded  
+  ignore_errors: yes

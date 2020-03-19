@@ -1,0 +1,196 @@
+
+#Tasks 53-60
+- stat: path=/etc/vsftpd.conf
+  register: stat_conf
+
+- name: capturing anonymous ftp home directory
+  shell: cat /etc/vsftpd.conf | grep anon_root= | cut -f2 -d"="
+  register: root_dir
+  check_mode: no
+
+- stat: path="{{ root_dir.stdout }}"
+  register: stat_root
+
+
+- stat: path={{ root_dir.stdout }}/bin
+  register: stat_bin
+  when: stat_root.stat.exists
+
+- stat: path={{ root_dir.stdout }}/lib
+  register: stat_lib
+  when: stat_root.stat.exists
+
+
+- name: securing ftp by ensuring root ownership and restricting permissions to files and directories
+  file: dest='{{ item }}' owner=root mode=u=rwx,g-w,o-w recurse=yes
+  with_items: "{{root_dir.stdout_lines}}"
+  when: stat_root.stat.exists
+
+  
+- name: Securing anon ftp bin directory files
+  file: dest='{{ item  }}/bin' owner=root mode=u=x,g=x,o=x recurse=yes
+  with_items: "{{root_dir.stdout_lines}}"
+  when: stat_bin.stat.exists
+
+- name: Securing anon ftp lib directory files
+  file: path='{{ item }}/lib' owner=root mode=u=rx,g=rx,o=rx recurse=yes
+  with_items: "{{root_dir.stdout_lines}}"
+  when: stat_lib.stat.exists
+
+
+#Tasks 65-66
+- name: delete "{{hosts_equiv_file_path}}"
+  file:
+    path: "{{hosts_equiv_file_path}}"
+    state: absent
+  when: delete_hosts_equiv_file
+
+- name: Add no_hosts_equiv
+  lineinfile: dest="{{rlogin_file_path}}"
+              line="no_hosts_equiv"
+              insertafter="^#?/lib/security/pam_rhosts_auth.so"
+  ignore_errors: yes
+  when: set_no_hosts_equiv
+
+
+
+#AD.1.5.8.1 - AD.1.5.9.17 : tasks 67,70-94,100-104
+- stat:
+     path: "{{services_file_path}}" 
+  register: services_file_stat
+
+
+#- name: display file status
+#  debug: msg="File "{{services_file_path}}" Not found on the end point" 
+#  when:  services_file_stat.stat.exists == False 
+
+- name: AD.1.5.8.1 - AD.1.5.9.17 - Display {{services_file_path}} file status
+  debug: msg="{{ 'services file found on the end point' if services_file_stat.stat.exists else 'services file not found on the end point, and the following tasks will be skipped'}}" 
+
+
+#Disabling service ports
+- name: AD.1.5.8.1 - AD.1.5.9.17 - Disable unwanted services
+  replace:
+    path: "{{services_file_path}}"
+    regexp: "{{ item }}"
+    replace: "#{{ item }}"
+  ignore_errors: yes
+  with_items:
+    - "{{disable_services}}"
+  when: services_file_stat.stat.exists and comment_Listed_Services
+
+
+
+- name: AD.1.5.8.1 - AD.1.5.9.17 - List of Network Services which needs to be disabled
+  copy: src="{{ network_services_list }}" dest=/var/tmp mode=0755
+  when: services_file_stat.stat.exists
+
+- name: AD.1.5.8.1 - AD.1.5.9.17 - Copy NetworkServices script file for RHEL 6
+  copy: src="{{ shell_script_path}}{{ disableNetworkServices_Rhel6_sh }}" dest="{{ shell_script_destination }}" mode=0755
+  when: services_file_stat.stat.exists and hostvars[inventory_hostname].ansible_distribution_major_version == '6'
+
+
+- name: AD.1.5.8.1 - AD.1.5.9.17 - Copy Network Services Script file for RHEL 7
+  copy: src="{{ shell_script_path}}{{ disableNetworkServices_Rhel7_sh }}" dest="{{ shell_script_destination }}" mode=0755
+  when: services_file_stat.stat.exists and hostvars[inventory_hostname].ansible_distribution_major_version == '7'
+
+- name: AD.1.5.8.1 - AD.1.5.9.17 - Execute Disable and Stop Network services script for RHEL 6
+  command: 'sh {{ shell_script_destination }}/{{ disableNetworkServices_Rhel6_sh }}'
+  when: hostvars[inventory_hostname].ansible_distribution_major_version == '6'
+
+
+- name: AD.1.5.8.1 - AD.1.5.9.17 - Execute Disable and Stop Network services script for RHEL 7
+  command: 'sh {{ shell_script_destination }}/{{ disableNetworkServices_Rhel7_sh }}'
+  when: hostvars[inventory_hostname].ansible_distribution_major_version == '7'
+
+#Disable services
+#- name: Disable the services
+#  systemd:
+#   name: "{{ item }}"
+#   enabled: no
+#  ignore_errors: yes
+#  with_items:
+#   - "{{disable_services}}"
+#  when: services_file_stat.stat.exists and set_Disable_Services
+
+
+#Stop Services
+#- name: stop service 
+#  service: name={{ item }} state=stopped
+#  ignore_errors: yes  
+#  with_items:
+#    - "{{disable_services}}"
+#  when: services_file_stat.stat.exists and set_Disable_Services
+
+
+
+#AD.1.5.3.1 task 63
+- stat:
+     path: "{{exports_file_path}}"
+  register: exports_file_stat
+
+- name: AD.1.5.3.1 - Display {{exports_file_path}} file status  
+  debug: msg="{{ exports_file_path }} {{ ' file found on the end point' if exports_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AD.1.5.3.1 - Changing permissions and ownership of "{{exports_file_path}}", set "644 and root ownership"
+  file: dest="{{exports_file_path}}"  owner=root mode=g=r,o=r,u=rw
+  when: exports_file_stat.stat.exists and set_exports_file_owner
+
+
+#AD.1.5.9.20, AD.1.5.9.21, AD.1.5.9.22 Task 97- 99 
+#Adding parameters in network security settings
+
+# AD.1.5.9.20 - Enable tcp syncookies to prevent syn flooding
+
+- stat:
+     path: "{{sysctl_file_path}}"
+  register: sysctl_file_stat
+
+- name:  AD.1.5.9.20 - Display {{sysctl_file_path}} file status  
+  debug: msg="{{ sysctl_file_path }} {{ ' file found on the end point' if sysctl_file_stat.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AD.1.5.9.20 - Enable tcp syncookies to prevent syn flooding
+  lineinfile:
+    dest:  "{{sysctl_file_path}}"
+    regexp: '^(.*)net.ipv4.tcp_syncookies(.*)$'
+    line: "{{syncookies}}"
+    backrefs: yes
+  when: sysctl_file_stat.stat.exists and set_syncookies
+
+- lineinfile:
+    path:  "{{sysctl_file_path}}"
+    line:  "{{syncookies}}"
+  when: sysctl_file_stat.stat.exists and set_syncookies
+
+
+# AD.1.5.9.21 - 98 Turn off ICMP broadcasts
+- name: AD.1.5.9.21 - Turn off ICMP broadcasts
+  lineinfile:
+    dest:  "{{sysctl_file_path}}"
+    regexp: '^(.*)net.ipv4.icmp_echo_ignore_broadcasts(.*)$'
+    line: "{{icmp_broadcasts}}"
+    backrefs: yes
+  when: sysctl_file_stat.stat.exists and set_icmp_broadcasts
+
+- lineinfile:
+    path:  "{{sysctl_file_path}}"
+    line: "{{icmp_broadcasts}}"
+  when: sysctl_file_stat.stat.exists and set_icmp_broadcasts
+
+
+#AD.1.5.9.22 Disable ICMP Redirect Acceptance
+- name: AD.1.5.9.22 - Disable ICMP Redirect Acceptance
+  lineinfile:
+    dest:  "{{sysctl_file_path}}"
+    regexp: '^(.*)net.ipv4.conf.all.accept_redirects(.*)$'
+    line: "{{network_redirects}}"
+    backrefs: yes
+  when: sysctl_file_stat.stat.exists and set_network_redirects
+
+- lineinfile:
+    path:  "{{sysctl_file_path}}"
+    line: "{{network_redirects}}"
+  when: sysctl_file_stat.stat.exists and set_network_redirects
+
+- name: AD.1.5.9.22 - Reloading /etc/sysctl.conf file after modification
+  shell: "/sbin/sysctl -p /etc/sysctl.conf" 

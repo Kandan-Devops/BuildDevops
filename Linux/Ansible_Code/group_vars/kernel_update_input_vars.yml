@@ -1,0 +1,9 @@
+---
+
+RPM_SOURC_DIR: /etc/Ansible/kernel_update
+
+RPM_FILE: kernel-plus-3.10.0-1062.1.2.el7.centos.plus.x86_64.rpm
+
+DESTINATION_DIR: /tmp
+
+GRUB_PATH: /etc/default/grub

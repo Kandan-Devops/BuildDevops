@@ -1,0 +1,950 @@
+# AD.1.8.2.1 task 111
+- stat:
+     path: "{{ rhosts_filePath }}"
+  register: rhosts_filePath_result
+
+
+- name: AD.1.8.2.1  - Display file status of {{ rhosts_filePath }}
+  debug: msg="{{ rhosts_filePath }} {{ 'file found on the end point' if rhosts_filePath_result.stat.exists else 'file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.2.1 - Changing {{ rhosts_filePath }} file permissions
+  file:
+     path: "{{ rhosts_filePath }}"
+     mode: "{{ rhosts_fileMode }}"
+  when: rhosts_filePath_result.stat.exists and setrhosts_fileMode
+
+
+# AD.1.8.2.2 task 112
+- stat:
+     path: "{{ netrc_filePath }}"
+  register: netrc_filePath_result
+
+- name: AD.1.8.2.2  - Display file status of {{ netrc_filePath }}
+  debug: msg=" {{ netrc_filePath }} {{ 'file found on the end point' if netrc_filePath_result.stat.exists else 'file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AD.1.8.2.2 - Changing {{ netrc_filePath }} file permissions
+  file:
+     path: "{{ netrc_filePath }}"
+     mode: "{{ netrc_fileMode }}"
+  when: netrc_filePath_result.stat.exists and setnetrc_fileMode
+
+
+#AD.1.8.3.2 task 114
+- stat:
+     path: "{{ usrDirectory }}"
+  register: usrDirectory_result
+
+- name: AD.1.8.3.2  - Display Directory status of {{ usrDirectory }}
+  debug: msg="{{ usrDirectory }} {{ ' file found on the end point' if usrDirectory_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AD.1.8.3.2 - fix {{ usrDirectory }} directory permissions
+  file:
+     path: "{{ usrDirectory }}"
+     mode: "{{ usrDirectoryMode }}"
+  when: usrDirectory_result.stat.exists and setusrDirectoryMode
+
+
+#AD.1.8.3.3 task 115
+- stat:
+     path: "{{ etcDirectory }}"
+  register: etc_stat_result
+
+- name: AD.1.8.3.3  - Display Directory status of {{ etcDirectory }}
+  debug: msg="{{ etcDirectory }}  {{ ' found on the end point' if etc_stat_result.stat.exists else ' not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.3.3 - Fix {{ etcDirectory }} directory permissions
+  file:
+     path: "{{ etcDirectory }}"
+     mode: "{{ etcDirectoryMode }}"
+  when: etc_stat_result.stat.exists and setetcDirectoryMode
+
+
+#AD.1.8.4.1 - task 116
+- stat:
+     path: "{{ opasswdFile }}"
+  register: opasswdFile_result
+
+- name: AD.1.8.4.1 - Display file status of {{ opasswdFile }}
+  debug: msg="{{ opasswdFile }} {{ ' file found on the end point' if opasswdFile_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AD.1.8.4.1 - fix {{ opasswdFile }} file permissions
+  file:
+     path: "{{ opasswdFile }}"
+     mode: "{{ opasswdFileMode }}"
+  when: opasswdFile_result.stat.exists and setopasswdFileMode
+
+
+#AD.1.8.4.2 -task 117
+- stat:
+     path: "{{ shadowFile }}"
+  register: shadowFile_result
+
+- name: AD.1.8.4.2 - Display file status of {{ shadowFile }}
+  debug: msg="{{ shadowFile }} {{ ' file found on the end point' if shadowFile_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.4.2 -Fix {{ shadowFile }} file permissions
+  file:
+     path: "{{ shadowFile }}"
+     mode: "{{ shadowFileMode }}"
+  when: shadowFile_result.stat.exists and setshadowFileMode
+
+
+#AD.1.8.5.1 - task 118
+- stat:
+     path: "{{ varDirectory }}"
+  register: varDirectory_result
+
+- name: AD.1.8.5.1  - Display file status of {{ varDirectory }}
+  debug: msg=" {{ varDirectory }} {{ ' found on the end point' if varDirectory_result.stat.exists else ' not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.5.1- Fix {{ varDirectory }} directory permissions
+  file:
+     path: "{{ varDirectory }}"
+     state: directory
+     mode: "{{ varDirectoryMode }}"
+  when: varDirectory_result.stat.exists and setvarDirectoryMode
+
+#AD.1.8.5.2 - task 119
+- stat:
+     path: "{{ varLogDirectory }}"
+  register: varLogDirectory_result
+
+- name: AD.1.8.5.1  - Display file status of {{ varLogDirectory }}
+  debug: msg="{{ varLogDirectory }} {{ ' found on the end point' if varLogDirectory_result.stat.exists else ' not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.5.2 - fix {{ varLogDirectory }} directory permissions
+  file:
+     path: "{{ varLogDirectory }}"
+     mode: "{{ varLogDirectoryMode }}"
+     recurse: no
+  when: varLogDirectory_result.stat.exists and setvarLogDirectoryMode
+
+
+#AD.1.8.6.1 and AD.1.8.12.1.1 - task 120 and 128
+- stat:
+     path: "{{ varFailLogFile }}"
+  register: faillog_file_stat
+
+- name:  AD.1.8.6.1 and AD.1.8.12.1.1 - Display file status of {{ varFailLogFile }}
+  debug: msg="{{ varFailLogFile }} {{ ' found on the end point' if faillog_file_stat.stat.exists else ' not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.6.1 and AD.1.8.12.1.1 - Set permission for the log files in "{{ varFailLogFile }}"
+  file: dest={{ varFailLogFile }} mode={{ varFailLogFileMode }}
+  when: faillog_file_stat.stat.exists and setvarFailLogFileMode
+
+
+
+# AD.1.8.6.2 - task 121
+- stat:
+     path: "{{ tallyLogDirectory }}"
+  register: tallyLogDirectory_result
+
+
+- name:  AD.1.8.6.2- Display file status
+  debug: msg="{{ tallyLogDirectory }} {{ ' found on the end point' if tallyLogDirectory_result.stat.exists else ' not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.6.2- Fix {{ tallyLogDirectory }} file permissions
+  file:
+     path: "{{ tallyLogDirectory }}"
+     mode: "{{ tallyLogDirectoryMode }}"
+  when: tallyLogDirectory_result.stat.exists and settallyLogDirectoryMode
+
+
+#AD.1.8.8 - task 124
+- stat:
+     path: "{{ varLogSecure }}"
+  register: varLogSecure_result
+
+- name:  AD.1.8.8- Display {{ varLogSecure }} file status
+  debug: msg=" {{ varLogSecure }} {{ ' found on the end point' if varLogSecure_result.stat.exists else ' not found on the end point, and the following task will be skipped'}}" 
+
+- name: AD.1.8.8 - Fix {{ varLogSecure }} file permissions
+  file:
+     path: "{{ varLogSecure }}"
+     mode: "{{ varLogSecureMode }}"
+  when: varLogSecure_result.stat.exists and setvarLogSecureMode
+
+- stat:
+     path: "{{ varLogAuth }}"
+  register: varLogAuth_result
+
+- name: "AD.1.8.8- Display {{ varLogAuth }} file status"
+  debug: msg="{{ varLogAuth }} {{ ' found on the end point' if varLogAuth_result.stat.exists else '  not found on the end point, and the following task will be skipped'}}" 
+
+- name: AD.1.8.8 - Fix {{ varLogAuth }} file permissions
+  file:
+     path: "{{ varLogAuth }}"
+     mode: "{{ varLogAuthMode }}"
+  when: varLogAuth_result.stat.exists and setvarLogAuthMode
+
+
+#task 125 .. duplicate of 163
+
+#- stat:
+#     path: "{{ tmpDirectory1 }}"
+#  register: tmp_result
+
+#- name: display file status of {{ tmpDirectory1 }}
+#  debug: msg="Directory {{ tmpDirectory1 }} Not found on the end point" 
+#  when: tmp_result.stat.exists == false
+
+#- name: fix {{ tmpDirectory1 }} subdirectory permissions
+#  file:
+#     path: "{{ tmpDirectory1 }}"
+#     state: directory
+#     mode: "{{ tmpDirectoryMode1 }}"
+#     recurse: no
+#  when:  tmp_result.stat.exists
+
+
+# AD.1.8.10 - task 126
+- name: AD.1.8.10 - Restrict permission of snmp.conf
+  shell: cd /etc/ ; find . -type f -name snmpd.conf -exec chmod 0640 {} \;
+  args:
+    executable: /bin/bash
+  when: setSnmpPermission
+
+#AD.1.8.11 - task 127
+- stat:
+     path: "{{ varTmpDirectory }}"
+  register: var_result
+
+- name: AD.1.8.11 - Display {{ varTmpDirectory }} file status
+  debug: msg=" {{ varTmpDirectory }}  {{ 'found on the end point' if var_result.stat.exists else ' not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.11- fix {{ varTmpDirectory }} directory permissions
+  file:
+     path: "{{ varTmpDirectory }}"
+     state: directory
+     mode: "{{ varTmpDirectoryMode }}"
+     recurse: no
+  when:  var_result.stat.exists and setvarTmpDirectoryMode
+
+
+#AD.1.8.12.1.2 - task 129
+- stat:
+     path: "{{ varLogTallyLogFile }}"
+  register: tallylog_file_stat
+
+- name: AD.1.8.12.1.2 - Display {{ varLogTallyLogFile }} file status
+  debug: msg=" {{ varLogTallyLogFile }} {{ ' found on the end point' if tallylog_file_stat.stat.exists else ' not found on the end point, and the following task will be skipped'}}" 
+
+- name: AD.1.8.12.1.2 - Set file access mode on "{{ varLogTallyLogFile }}"
+  file: dest={{ varLogTallyLogFile }} mode={{ varLogTallyLogFileMode }}
+  when: tallylog_file_stat.stat.exists and setvarLogTallyLogFileMode
+
+
+#AD.1.8.12.2 - task 130
+- stat:
+     path: "{{ varLogMessages }}" #For Non-Debian
+  register: messages_file_stat
+
+- name: AD.1.8.12.2 - Display {{ varLogMessages }} file status
+  debug: msg=" {{ varLogMessages }} {{ ' found on the end point' if messages_file_stat.stat.exists else ' not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.12.2 - Set gid to log files in "{{ varLogMessages }}"
+  file: dest={{ varLogMessages }} mode={{ varLogMessagesMode }}
+  when: messages_file_stat.stat.exists and setvarLogMessagesMode
+
+
+- stat:
+     path: "{{ varLogSyslog }}" #For Debian
+  register: syslog_file_stat
+
+- name: AD.1.8.12.2 - Display {{ varLogSyslog }} file status
+  debug: msg=" {{ varLogSyslog }} {{ ' found on the end point' if syslog_file_stat.stat.exists else ' not found on the end point, and the following task will be skipped'}}" 
+
+- name: AD.1.8.12.2 - Set gid to log files in "{{ varLogSyslog }}""
+  file: dest={{ varLogSyslog }} mode={{ varLogSyslogMode }}
+  when: syslog_file_stat.stat.exists and setvarLogSyslogMode
+
+
+#  AD.1.8.12.3 - task 131 
+- stat:
+     path: "{{ varLogWtmp }}"
+  register: wtmp_file_stat
+
+- name: AD.1.8.12.3 - Display {{ varLogWtmp }} file status
+  debug: msg="{{ varLogWtmp }} {{ ' found on the end point' if wtmp_file_stat.stat.exists else ' not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.12.3 - Set gid to log files in "{{ varLogWtmp }}"
+  file: dest={{ varLogWtmp }} mode={{ varLogWtmpMode }}
+  when: wtmp_file_stat.stat.exists and setvarLogWtmpMode
+
+
+#AD.1.8.12.4 - task 132
+- stat:
+     path: "{{ varLogSecure1 }}"
+  register: secure_file_stat
+
+
+- name: AD.1.8.12.4 - Display {{ varLogSecure1 }} file status
+  debug: msg="{{ varLogSecure1 }} {{ 'found on the end point' if secure_file_stat.stat.exists else ' not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.12.4- Set mode to log files in "{{ varLogSecure1 }}"
+  file: dest={{ varLogSecure1 }} mode={{ varLogSecure1Mode }}
+  when: secure_file_stat.stat.exists and setvarLogSecure1Mode
+
+#  AD.1.8.12.5 - task 133
+- stat:
+     path: "{{ varLogAuth1 }}"
+  register: varLogAuth1_file_stat
+
+- name: AD.1.8.12.5 - Display {{ varLogAuth }} file status
+  debug: msg="{{ varLogAuth }} {{ ' found on the end point' if varLogAuth1_file_stat.stat.exists else ' not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.12.5 - Set gid to log files in "{{ varLogAuth1 }}", adding "+s"
+  file: dest={{ varLogAuth1 }} mode={{ varLogAuthMode1 }}
+  when: varLogAuth1_file_stat.stat.exists and setvarLogAuthMode1
+
+
+# AD.1.8.12.6 - task 134
+
+- stat:
+     path: "{{ IBMsinitDotsh }}"
+  register: IBMsinit_file_stat
+
+- name: AD.1.8.12.6 and AD.1.9.1.3 -Display file status of {{ IBMsinitDotsh }}
+  debug: msg="{{ IBMsinitDotsh }}  {{ ' found on the end point' if IBMsinit_file_stat.stat.exists else ' not found on the end point, and the following task will be skipped'}}" 
+
+- name: AD.1.8.12.6 - Changing perm of {{ IBMsinitDotsh }}
+  file: dest={{ IBMsinitDotsh }} mode={{ IBMsinitDotshMode }}
+  when: IBMsinit_file_stat.stat.exists and setIBMsinitDotsh
+
+
+#AD.1.9.1.3 - task 167
+- name:  AD.1.9.1.3 - Template {{ IBMsinitDotsh }} file
+  template:
+    src: "{{IBMsinitDotshj2}}"
+    dest: "{{IBMsinitDotsh}}"
+    mode: '{{ IBMsinitDotshMode }}'
+  when: setIBMsinitDotsh
+
+
+
+# AD.1.8.12.7 - task 135
+- stat:
+     path: "{{ IBMsinitDotcsh }}"
+  register: IBMsinitDotcsh_result
+
+
+- name: AD.1.9.1.4 and AD.1.8.12.7 -Display file status of {{ IBMsinitDotcsh }}
+  debug: msg="{{ IBMsinitDotcsh }} {{ ' found on the end point' if IBMsinitDotcsh_result.stat.exists else ' not found on the end point, and the following task will be skipped'}}" 
+
+- name: AD.1.8.12.7 - Changing perm of "{{ IBMsinitDotcsh }}"
+  file: dest={{ IBMsinitDotcsh }} mode={{ IBMsinitDotcshMode }}
+  when: IBMsinitDotcsh_result.stat.exists and setIBMsinitDotcsh
+
+#AD.1.9.1.4 task 168
+- name:  AD.1.9.1.4 - Template {{ IBMsinitDotcsh }} file
+  template:
+    src: "{{IBMsinitDotcshj2}}"
+    dest: "{{IBMsinitDotcsh}}"
+    mode: '{{ IBMsinitDotcshMode }}'
+  when: setIBMsinitDotcsh
+
+
+#AD.1.8.13.2 - AD.1.8.13.4 task 138-140
+- stat:
+     path: "{{ etcInitTabFile }}"
+  register: etcInitTabFile_result
+
+- name: AD.1.8.13.2 - AD.1.8.13.4 -Display file status of {{ etcInitTabFile }}
+  debug: msg="{{ etcInitTabFile }} {{ ' found on the end point' if etcInitTabFile_result.stat.exists else ' not found on the end point, and the following task will be skipped'}}" 
+
+- name: AD.1.8.13.2 - AD.1.8.13.4 - Changing {{ etcInitTabFile }} file permissions
+  file:
+     path: "{{ etcInitTabFile }}"
+     mode: "{{ etcInitTabFileMode }}"
+  when: etcInitTabFile_result.stat.exists and setetcInitTabFileMode
+
+
+#AD.1.8.14.1 - AD.1.8.14.3 - task 141-143
+- stat:
+     path: "{{ varSpoolCronRootFile }}"
+  register: varSpoolCronRootFile_result
+
+- name: AD.1.8.14.1 - AD.1.8.14.3- Display file status of {{ varSpoolCronRootFile }}
+  debug: msg="{{ varSpoolCronRootFile }} {{ ' found on the end point' if varSpoolCronRootFile_result.stat.exists else ' not found on the end point, and the following task will be skipped'}}" 
+
+- name: AD.1.8.14.1 - AD.1.8.14.3- Changing {{ varSpoolCronRootFile }} file permissions
+  file:
+     path: "{{ varSpoolCronRootFile }}"
+     mode: "{{ varSpoolCronRootFileMode }}"
+  when: varSpoolCronRootFile_result.stat.exists and setvarSpoolCronRootFileMode
+
+#AD.1.8.15.1 - AD.1.8.15.3 - task 144 - 146 
+- stat:
+     path: "{{ etcCrontabDirectory }}"
+  register: etcCrontab_result     
+
+- name: AD.1.8.15.1 - AD.1.8.15.3 - Display file status of {{ etcCrontabDirectory }}
+  debug: msg="{{ etcCrontabDirectory }} {{ ' found on the end point' if etcCrontab_result.stat.exists else ' not found on the end point, and the following task will be skipped'}}" 
+
+- name: AD.1.8.15.1 - AD.1.8.15.3 - Changing {{ etcCrontabDirectory }} file permissions
+  file:
+     path: "{{ etcCrontabDirectory }}"
+     mode: "{{ etcCrontabDirectoryMode }}"
+     recurse: no
+  when: etcCrontab_result.stat.exists and setetcCrontabDirectoryMode
+
+#AD.1.8.17.1 - AD.1.8.17.3 : task 147 - 149
+- stat:
+     path: "{{ etcXinetdDotConfFile }}"
+  register: etcXinetdDotCon_result     
+
+- name:  AD.1.8.17.1 - AD.1.8.17.3 - Display file status of {{ etcXinetdDotConfFile }}
+  debug: msg="{{ etcXinetdDotConfFile }} {{ ' found on the end point' if etcXinetdDotCon_result.stat.exists else ' not found on the end point, and the following task will be skipped'}}" 
+
+- name: AD.1.8.17.1 - AD.1.8.17.3 - Changing {{ etcXinetdDotConfFile }} file permissions
+  file:
+     path: "{{ etcXinetdDotConfFile }}"
+     state: file
+     mode: "{{ etcXinetdDotConfFileMode }}"
+  when: etcXinetdDotCon_result.stat.exists and setetcXinetdDotConfFileMode
+
+
+
+# AD.1.8.18.2- AD.1.8.18.3  task 150-151
+- stat:
+     path: "{{ etcInitDotDRc0DotDFile }}"
+  register: etcInitDotDRc0DotDFile_result     
+
+- name: AD.1.8.18.2- AD.1.8.18.3 - Display file status of {{ etcInitDotDRc0DotDFile }}
+  debug: msg="{{ etcInitDotDRc0DotDFile }} {{ 'file found on the end point' if etcInitDotDRc0DotDFile_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.18.2- AD.1.8.18.3 - Changing {{ etcInitDotDRc0DotDFile }} file permissions
+  file:
+     path: "{{ etcInitDotDRc0DotDFile }}"
+     mode: "{{ etcInitDotDRc0DotDFileMode }}"
+  when: etcInitDotDRc0DotDFile_result.stat.exists and setetcInitDotDRc0DotDFileMode
+
+
+- stat:
+     path: "{{ etcInitDotDRc1DotDFile }}"
+  register: etcInitDotDRc1DotDFile_result     
+
+- name: AD.1.8.18.2- AD.1.8.18.3 - Display file status of {{ etcInitDotDRc1DotDFile }}
+  debug: msg="{{ etcInitDotDRc1DotDFile }}  {{ ' file found on the end point' if etcInitDotDRc1DotDFile_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.18.2- AD.1.8.18.3 - Changing {{ etcInitDotDRc1DotDFile }} file permissions
+  file:
+     path: "{{ etcInitDotDRc1DotDFile }}"
+     mode: "{{ etcInitDotDRc1DotDFileMode }}"
+  when: etcInitDotDRc1DotDFile_result.stat.exists and setetcInitDotDRc1DotDFileMode
+
+
+- stat:
+     path: "{{ etcInitDotDRc2DotDFile }}"
+  register: etcInitDotDRc2DotDFile_result     
+
+- name: AD.1.8.18.2- AD.1.8.18.3 - Display file status of {{ etcInitDotDRc2DotDFile }}
+  debug: msg="{{ etcInitDotDRc2DotDFile }} {{ ' file found on the end point' if etcInitDotDRc2DotDFile_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.18.2- AD.1.8.18.3 - Changing {{ etcInitDotDRc2DotDFile }} file permissions
+  file:
+     path: "{{ etcInitDotDRc2DotDFile }}"
+     mode: "{{ etcInitDotDRc2DotDFileMode }}"
+  when: etcInitDotDRc2DotDFile_result.stat.exists and setetcInitDotDRc2DotDFileMode
+
+
+- stat:
+     path: "{{ etcInitDotDRc3DotDFile }}"
+  register: etcInitDotDRc3DotDFile_result     
+
+- name: AD.1.8.18.2- AD.1.8.18.3 - Display file status of {{ etcInitDotDRc3DotDFile }}
+  debug: msg="{{ etcInitDotDRc3DotDFile }} {{ ' file found on the end point' if etcInitDotDRc3DotDFile_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.18.2- AD.1.8.18.3 - Changing {{ etcInitDotDRc3DotDFile }} file permissions
+  file:
+     path: "{{ etcInitDotDRc3DotDFile }}"
+     mode: "{{ etcInitDotDRc3DotDFileMode }}"
+  when: etcInitDotDRc3DotDFile_result.stat.exists and setetcInitDotDRc3DotDFileMode
+
+
+- stat:
+     path: "{{ etcInitDotDRc4DotDFile }}"
+  register: etcInitDotDRc4DotDFile_result     
+
+- name: AD.1.8.18.2- AD.1.8.18.3 - Display file status of {{ etcInitDotDRc4DotDFile }}
+  debug: msg="{{etcInitDotDRc4DotDFile }}  {{ ' file found on the end point' if etcInitDotDRc4DotDFile_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.18.2- AD.1.8.18.3 - Changing {{ etcInitDotDRc4DotDFile }} file permissions
+  file:
+     path: "{{ etcInitDotDRc4DotDFile }}"
+     mode: "{{ etcInitDotDRc4DotDFileMode }}"
+  when: etcInitDotDRc4DotDFile_result.stat.exists and setetcInitDotDRc4DotDFileMode
+
+
+- stat:
+     path: "{{ etcInitDotDRc5DotDFile }}"
+  register: etcInitDotDRc5DotDFile_result     
+
+- name: AD.1.8.18.2- AD.1.8.18.3 - Display file status of {{ etcInitDotDRc5DotDFile }}
+  debug: msg="{{ etcInitDotDRc5DotDFile }} {{ ' file found on the end point' if etcInitDotDRc5DotDFile_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AD.1.8.18.2- AD.1.8.18.3 - Changing {{ etcInitDotDRc5DotDFile }} file permissions
+  file:
+     path: "{{ etcInitDotDRc5DotDFile }}"
+     mode: "{{ etcInitDotDRc5DotDFileMode }}"
+  when: etcInitDotDRc5DotDFile_result.stat.exists and setetcInitDotDRc5DotDFileMode
+
+
+- stat:
+     path: "{{ etcInitDotDRc6DotDFile }}"
+  register: etcInitDotDRc6DotDFile_result     
+
+- name: AD.1.8.18.2- AD.1.8.18.3 - Display file status of {{ etcInitDotDRc6DotDFile }}
+  debug: msg="{{ etcInitDotDRc6DotDFile }} {{ ' file found on the end point' if etcInitDotDRc6DotDFile_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.18.2- AD.1.8.18.3 - Changing {{ etcInitDotDRc6DotDFile }} file permissions
+  file:
+     path: "{{ etcInitDotDRc6DotDFile }}"
+     mode: "{{ etcInitDotDRc6DotDFileMode }}"
+  when: etcInitDotDRc6DotDFile_result.stat.exists and setetcInitDotDRc6DotDFileMode
+
+
+- stat:
+     path: "{{ etcInitDotDRcSDotDFile }}"
+  register: etcInitDotDRcSDotDFile_result     
+
+- name: AD.1.8.18.2 - AD.1.8.18.3 - Display file status of {{ etcInitDotDRcSDotDFile }}
+  debug: msg="{{ etcInitDotDRcSDotDFile }} {{ ' file found on the end point' if etcInitDotDRcSDotDFile_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.18.2 - AD.1.8.18.3 - Changing {{ etcInitDotDRcSDotDFile }} file permissions
+  file:
+     path: "{{ etcInitDotDRcSDotDFile }}"
+     mode: "{{ etcInitDotDRcSDotDFileMode }}"
+  when: etcInitDotDRcSDotDFile_result.stat.exists and setetcInitDotDRcSDotDFileMode
+
+
+- stat:
+     path: "{{ etcRcDotDRc0DotDFile }}"
+  register: etcRcDotDRc0DotDFile_result     
+
+- name: AD.1.8.18.2 - AD.1.8.18.3 - Display file status of {{ etcRcDotDRc0DotDFile }}
+  debug: msg="{{ etcRcDotDRc0DotDFile }} {{ ' file found on the end point' if etcRcDotDRc0DotDFile_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.18.2 - AD.1.8.18.3 - Changing {{ etcRcDotDRc0DotDFile }} file permissions
+  file:
+     path: "{{ etcRcDotDRc0DotDFile }}"
+     mode: "{{ etcRcDotDRc0DotDFileMode }}"
+  when: etcRcDotDRc0DotDFile_result.stat.exists and setetcRcDotDRc0DotDFileMode
+
+
+- stat:
+     path: "{{ etcRcDotDRc1DotDFile }}"
+  register: etcRcDotDRc1DotDFile_result     
+
+- name: AD.1.8.18.2 - AD.1.8.18.3 - Display file status of {{ etcRcDotDRc1DotDFile }}
+  debug: msg="{{ etcRcDotDRc1DotDFile }} {{ ' file found on the end point' if etcRcDotDRc1DotDFile_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.18.2 - AD.1.8.18.3 - Changing {{ etcRcDotDRc1DotDFile }} file permissions
+  file:
+     path: "{{ etcRcDotDRc1DotDFile }}"
+     mode: "{{ etcRcDotDRc1DotDFileMode }}"
+  when: etcRcDotDRc1DotDFile_result.stat.exists and setetcRcDotDRc1DotDFileMode
+
+
+- stat:
+     path: "{{ etcRcDotDRc2DotDFile }}"
+  register: etcRcDotDRc2DotDFile_result     
+
+- name: AD.1.8.18.2 - AD.1.8.18.3 - Display file status of {{ etcRcDotDRc2DotDFile }}
+  debug: msg="{{ etcRcDotDRc2DotDFile }} {{ ' file found on the end point' if etcRcDotDRc2DotDFile_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.18.2- AD.1.8.18.3 - Changing {{ etcRcDotDRc2DotDFile }} file permissions
+  file:
+     path: "{{ etcRcDotDRc2DotDFile }}"
+     mode: "{{ etcRcDotDRc2DotDFileMode }}"
+  when: etcRcDotDRc2DotDFile_result.stat.exists and setetcRcDotDRc2DotDFileMode
+
+
+- stat:
+     path: "{{ etcRcDotDRc3DotDFile }}"
+  register: etcRcDotDRc3DotDFile_result     
+
+- name: AD.1.8.18.2 - AD.1.8.18.3 - Display file status of {{ etcRcDotDRc3DotDFile }}
+  debug: msg="{{ etcRcDotDRc3DotDFile }} {{ 'file found on the end point' if etcRcDotDRc3DotDFile_result.stat.exists else 'file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AD.1.8.18.2 - AD.1.8.18.3 - Changing {{ etcRcDotDRc3DotDFile }} file permissions
+  file:
+     path: "{{ etcRcDotDRc3DotDFile }}"
+     mode: "{{ etcRcDotDRc3DotDFileMode }}"
+  when: etcRcDotDRc3DotDFile_result.stat.exists and setetcRcDotDRc3DotDFileMode
+
+
+- stat:
+     path: "{{ etcRcDotDRc4DotDFile }}"
+  register: etcRcDotDRc4DotDFile_result     
+
+- name: AD.1.8.18.2 - AD.1.8.18.3 - Display file status of {{ etcRcDotDRc4DotDFile }}
+  debug: msg="{{ etcRcDotDRc4DotDFile }} {{ ' file found on the end point' if etcRcDotDRc4DotDFile_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.18.2- AD.1.8.18.3 - Changing {{ etcRcDotDRc4DotDFile }} file permissions
+  file:
+     path: "{{ etcRcDotDRc4DotDFile }}"
+     mode: "{{ etcRcDotDRc4DotDFileMode }}"
+  when: etcRcDotDRc4DotDFile_result.stat.exists and setetcRcDotDRc4DotDFileMode
+
+
+- stat:
+     path: "{{ etcRcDotDRc5DotDFile }}"
+  register: etcRcDotDRc5DotDFile_result     
+
+- name: AD.1.8.18.2 - AD.1.8.18.3 - Display file status of {{ etcRcDotDRc5DotDFile }}
+  debug: msg="{{ etcRcDotDRc5DotDFile }} {{ 'file found on the end point' if etcRcDotDRc5DotDFile_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.18.2 - AD.1.8.18.3 - Changing {{ etcRcDotDRc5DotDFile }} file permissions
+  file:
+     path: "{{ etcRcDotDRc5DotDFile }}"
+     mode: "{{ etcRcDotDRc5DotDFileMode }}"
+  when: etcRcDotDRc5DotDFile_result.stat.exists and setetcRcDotDRc5DotDFileMode
+
+
+- stat:
+     path: "{{ etcRcDotDRc6DotDFile }}"
+  register: etcRcDotDRc6DotDFile_result     
+
+- name: AD.1.8.18.2 - AD.1.8.18.3 - Display file status of {{ etcRcDotDRc6DotDFile }}
+  debug: msg="{{ etcRcDotDRc6DotDFile }} {{ ' file found on the end point' if etcRcDotDRc6DotDFile_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.18.2 - AD.1.8.18.3 - Changing {{ etcRcDotDRc6DotDFile }} file permissions
+  file:
+     path: "{{ etcRcDotDRc6DotDFile }}"
+     mode: "{{ etcRcDotDRc6DotDFileMode }}"
+  when: etcRcDotDRc6DotDFile_result.stat.exists and setetcRcDotDRc6DotDFileMode
+
+
+- stat:
+     path: "{{ etcRcDotDRcSDotDFile }}"
+  register: etcRcDotDRcSDotDFile_result     
+
+- name: AD.1.8.18.2 - AD.1.8.18.3 - Display file status of {{ etcRcDotDRcSDotDFile }}
+  debug: msg="{{ etcRcDotDRcSDotDFile }} {{ ' file found on the end point' if etcRcDotDRcSDotDFile_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.18.2 - AD.1.8.18.3 - Changing {{ etcRcDotDRcSDotDFile }} file permissions
+  file:
+     path: "{{ etcRcDotDRcSDotDFile }}"
+     mode: "{{ etcRcDotDRcSDotDFileMode }}"
+  when: etcRcDotDRcSDotDFile_result.stat.exists and setetcRcDotDRcSDotDFileMode
+
+
+#AD.1.8.19.2 - AD.1.8.19.3 : task 152-153
+- stat:
+     path: "{{ etcInitDotD }}"
+  register: etcInitDotD_result     
+
+
+- name: AD.1.8.19.2 - AD.1.8.19.3 - Display file status of {{ etcInitDotD }}
+  debug: msg=" {{ etcInitDotD }} {{ ' file found on the end point' if etcInitDotD_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.19.2 - AD.1.8.19.3 -Changing file permissions of {{ etcInitDotD }}
+  file:
+     path: "{{ etcInitDotD }}"
+     mode: "{{ etcInitDotDMode }}"
+  when: etcInitDotD_result.stat.exists and setetcInitDotDMode
+
+- stat:
+     path: "{{ etcRcDotD }}"
+  register: etcRcDotD_result     
+
+- name: AD.1.8.19.2 - AD.1.8.19.3 - Display file status of {{ etcRcDotD }}
+  debug: msg="{{ etcRcDotD }} {{ 'file found on the end point' if etcRcDotD_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.19.2 - AD.1.8.19.3 - Changing {{ etcRcDotD }} file permissions
+  file:
+     path: "{{ etcRcDotD }}"
+     mode: "{{ etcRcDotDMode }}"
+  when: etcRcDotD_result.stat.exists and setetcRcDotDMode
+
+#AD.1.8.20.1 - AD.1.8.20.3 : task 154-156
+- stat:
+     path: "{{ etcCronDotD }}"
+  register: etcCronDotD_result
+
+- name: AD.1.8.20.1 - AD.1.8.20.3 - Display file status of {{ etcCronDotD }}
+  debug: msg="{{ etcCronDotD }} {{ ' file found on the end point' if etcCronDotD_result.stat.exists else 'file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AD.1.8.20.1 - AD.1.8.20.3 -- Changing {{ etcCronDotD }} file permissions
+  file:
+     path: "{{ etcCronDotD }}"
+     mode: "{{ etcCronDotDMode }}"
+  when: etcCronDotD_result.stat.exists and setetcCronDotDMode
+
+#task 157-159
+- stat:
+     path: "{{ varSpoolCronTabRootFile }}"
+  register: varSpoolCronTabRootFile_result
+
+- name: AD.1.8.21.1, AD.1.8.21.2 and AD.1.8.21.3 - Display file status of {{ varSpoolCronTabRootFile }}
+  debug: msg="{{ varSpoolCronTabRootFile }} {{ ' file found on the end point' if varSpoolCronTabRootFile_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.21.1, AD.1.8.21.2 and AD.1.8.21.3 - Changing {{ varSpoolCronTabRootFile }} file permissions
+  file:
+     path: "{{ varSpoolCronTabRootFile }}"
+     mode: "{{ varSpoolCronTabRootFileMode }}"
+  when: varSpoolCronTabRootFile_result.stat.exists and setvarSpoolCronTabRootFileMode
+
+
+
+#task 161
+
+#- stat:
+#     path: /var
+#  register: stat_result
+
+#- name: display file status
+#  debug: msg="Directory /var Not found on the end point" 
+# when: stat_result.stat.exists == false
+
+#- name: fix /var directory and sub directory permissions
+#  file:
+#     path: /var
+#     state: directory
+#     mode: 0754
+#     recurse: no
+#  when:  stat_result.stat.exists
+
+
+
+#task 160
+- stat:
+     path: "{{ optDirectory }}"
+  register: opt_result
+
+- name: AD.1.8.22.1  - Display file status of {{ optDirectory }}
+  debug: msg="{{ optDirectory }} {{ ' file found on the end point' if opt_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.22.1  - Changing {{ optDirectory }} directory and sub directory permissions
+  file:
+     path: "{{ optDirectory }}"
+     state: directory
+     mode: "{{ optDirectoryMode }}"
+     recurse: no
+  when:  opt_result.stat.exists and setoptDirectoryMode
+
+#task 162
+- stat:
+     path: "{{ usrLocalDirectory }}"
+  register: usrLocal_result
+
+- name: AD.1.8.22.3  - Display file status of {{ usrLocalDirectory }}
+  debug: msg="{{ usrLocalDirectory }} {{ ' file found on the end point' if usrLocal_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AD.1.8.22.3 - Changing {{ usrLocalDirectory }} directory and sub directory permissions
+  file:
+     path: "{{ usrLocalDirectory }}"
+     state: directory
+     mode: "{{ usrLocalDirectoryMode }}"
+     recurse: no
+  when: usrLocal_result.stat.exists and setusrLocalDirectoryMode
+
+#task 163
+- stat:
+     path: "{{ tmpDirectory }}"
+  register: tmp_result
+
+
+- name: AD.1.8.22.4 - display file status of {{ tmpDirectory }}
+  debug: msg="{{ tmpDirectory }} {{ 'file found on the end point' if tmp_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.8.22.4 - Changing {{ tmpDirectory }} subdirectory permissions
+  file:
+     path: "{{ tmpDirectory }}"
+     state: directory
+     mode: "{{ tmpDirectoryMode }}"
+     recurse: no
+  when:  tmp_result.stat.exists and settmpDirectoryMode
+
+
+# AD.1.9.1.2 task 165
+- stat:
+     path: "{{ bashrcFilePath }}"
+  register: bashrcFile_result
+
+- name: AD.1.9.1.2 - Ddisplay file status of {{ bashrcFilePath }}
+  debug: msg="{{ bashrcFilePath }} {{ ' file found on the end point' if bashrcFile_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AD.1.9.1.2 - Update UMASK value on bashrcFile
+  replace: 
+      path: '{{ bashrcFilePath }}'  
+      regexp: '^(.*)umask(.*)$'
+      replace: '{{bashrc_umask_value}}'
+      backup: yes
+  when: bashrcFile_result.stat.exists and setbashrcFilePath
+
+
+# AD.1.9.1.3 task 166
+- stat:
+     path: "{{ loginDotDefs }}"
+  register: loginDotDefs_stat_result
+
+- name: AD.1.9.1.3 - Ddisplay file status of {{ loginDotDefs }}
+  debug: msg="{{ loginDotDefs }} {{ ' file found on the end point' if loginDotDefs_stat_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+- name: AD.1.9.1.3 - Update UMASK value
+  replace: 
+      path: '{{ loginDotDefs }}'  
+      regexp: '^(.*)UMASK(.*)$'
+      replace: '{{LOGINUMASK_VALUE}}'
+      backup: yes
+  when: loginDotDefs_stat_result.stat.exists and setloginDotDefs
+
+- name: AD.1.9.1.3 - Check UMASK 077 in {{ loginDotDefs }}  to set if it is not 
+  shell: grep ^UMASK {{loginDotDefs}} | cat
+  register: CHECK_UMASK_ENTRY
+  when: loginDotDefs_stat_result.stat.exists
+  check_mode: no
+
+- name: AD.1.9.1.3  - Set umask value of {{ loginDotDefs }} skeleton files
+  lineinfile: 
+      dest: "{{ loginDotDefs }}"
+      insertafter: EOF 
+      line: '{{LOGINUMASK_VALUE}}'
+  when: CHECK_UMASK_ENTRY.stdout_lines != "" and loginDotDefs_stat_result.stat.exists and setloginDotDefs
+
+
+
+# AD.1.9.1.7 task 171
+- stat:
+     path: "{{ cshrc }}"
+  register: cshrc_stat_result
+
+- name: AD.1.9.1.7 - Display file status of {{ cshrc }}
+  debug: msg="{{ cshrc }} {{ ' file found on the end point' if cshrc_stat_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.9.1.7 - Set umask value of {{ cshrc }} skeleton files
+  lineinfile: 
+      dest: "{{ cshrc }}"
+      regexp: '^umask(.*)$' 
+      line: '{{UMASK_VALUE}}'
+  when: cshrc_stat_result.stat.exists and setUmaskOncshrc
+
+
+- stat:
+     path: "{{ loginFile }}"
+  register: loginFile_stat_result
+
+- name: AD.1.9.1.7 - Display file status of {{ loginFile }}
+  debug: msg="{{ loginFile }} {{ ' file found on the end point' if loginFile_stat_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.9.1.7 - Set umask value of {{ loginFile }} skeleton files
+  lineinfile: 
+      dest: "{{ loginFile }}"
+      regexp: '^umask(.*)$' 
+      line: '{{UMASK_VALUE}}'
+  when: loginFile_stat_result.stat.exists and setUmaskOnloginFile
+
+
+- stat:
+     path: "{{ profileFile }}"
+  register: profileFile_stat_result
+
+- name: AD.1.9.1.7 - Display file status of {{ profileFile }}
+  debug: msg="{{ profileFile }} {{ ' file found on the end point' if profileFile_stat_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name: AD.1.9.1.7 - Set umask value of {{ profileFile }} skeleton files
+  lineinfile: 
+      dest: "{{ profileFile }}"
+      regexp: '^umask(.*)$' 
+      line: '{{UMASK_VALUE}}'
+  when: profileFile_stat_result.stat.exists and setUmaskOnprofileFile
+
+
+- stat:
+     path: "{{ bashrc }}"
+  register: bashrc_stat_result
+
+- name: AD.1.9.1.7 - Display file status of {{ bashrc }}
+  debug: msg="{{ bashrc }} {{ ' file found on the end point' if bashrc_stat_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name:  AD.1.9.1.7 - Set umask value of {{ bashrc }} skeleton files
+  lineinfile: 
+      dest: "{{ bashrc }}"
+      regexp: '^umask(.*)$' 
+      line: '{{UMASK_VALUE}}'
+  when: bashrc_stat_result.stat.exists and setUmaskOnbashrc
+
+
+- stat:
+     path: "{{ bashProfile }}"
+  register: bashProfile_stat_result
+
+- name: AD.1.9.1.7 - Display file status of {{ bashProfile }}
+  debug: msg="{{ bashProfile }} {{ ' file found on the end point' if bashProfile_stat_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name:  AD.1.9.1.7 - Set umask value of {{ bashProfile }} skeleton files
+  lineinfile: 
+      dest: "{{ bashProfile }}"
+      regexp: '^umask(.*)$' 
+      line: '{{UMASK_VALUE}}'
+  when: bashProfile_stat_result.stat.exists and setUmaskOnbashProfile
+
+
+- stat:
+     path: "{{ bashLogin }}"
+  register: bashLogin_stat_result
+
+- name: AD.1.9.1.7 - Display file status of {{ bashLogin }}
+  debug: msg="{{ bashLogin }} {{ ' file found on the end point' if bashLogin_stat_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name:  AD.1.9.1.7 - Set umask value of {{ bashLogin }} skeleton files
+  lineinfile: 
+      dest: "{{ bashLogin }}"
+      regexp: '^umask(.*)$' 
+      line: '{{UMASK_VALUE}}'
+  when: bashLogin_stat_result.stat.exists and setUmaskOnbashLogin
+
+
+- stat:
+     path: "{{ tcshrc }}"
+  register: tcshrc_stat_result
+
+- name: AD.1.9.1.7 - Display file status of {{ tcshrc }}
+  debug: msg="{{ tcshrc }} {{ ' file found on the end point' if tcshrc_stat_result.stat.exists else ' file not found on the end point, and the following task will be skipped'}}" 
+
+
+- name:  AD.1.9.1.7 - Set umask value of {{ tcshrc }} skeleton files
+  lineinfile: 
+      dest: "{{ tcshrc }}"
+      regexp: '^umask(.*)$' 
+      line: '{{UMASK_VALUE}}'
+  when: tcshrc_stat_result.stat.exists and setUmaskOntcshrc

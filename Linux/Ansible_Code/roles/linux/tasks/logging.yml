@@ -1,0 +1,238 @@
+
+# AD.1.2.2 task 40
+- name: AD.1.2.2 - Checking '{{ varLogWtmp }}'  file status
+  stat:
+   path: "{{ varLogWtmp }}"
+  register: wtmp_file_state
+
+- name: AD.1.2.2 - Display  '{{ varLogWtmp }}'  file status
+  debug: msg="{{ varLogWtmp }} {{ ' file found on the end point and the following task will be skipped' if wtmp_file_state.stat.exists else ' file not found on the end point'}}" 
+
+
+- name: AD.1.2.2 - Creating {{ varLogWtmp }} if it does not exist
+  file:
+   path: "{{ varLogWtmp }}"
+   state: touch
+   mode : "{{ varLogWtmpMode }}"
+  when: wtmp_file_state.stat.exists == false and create_wtmp
+
+# AD.1.2.3.1 task 41
+- stat:
+   path: "{{ varLogMessages }}"
+  register: messages_file_state
+
+- name: AD.1.2.3.1 - Display  '{{ varLogMessages }}'  file status
+  debug: msg="{{ varLogMessages }} {{' file found on the end point and the following task will be skipped' if messages_file_state.stat.exists else ' file not found on the end point'}}" 
+
+
+- name: AD.1.2.3.1 - Creating {{ varLogMessages }} if it does not exist (only for Non-Debian Distributions)
+  file:
+   path: "{{ varLogMessages }}"
+   state: touch
+   mode : "{{ varLogMessagesMode }}"
+  when: messages_file_state.stat.exists == false and create_messages
+
+
+# AD.1.2.3.2 task 42
+- stat:
+   path: "{{ varLogSyslog }}"
+  register: syslog_stat_result
+
+- name: AD.1.2.3.2 - Display  '{{ varLogSyslog }}'  file status
+  debug: msg="{{ varLogSyslog }} {{ ' file found on the end point and the following task will be skipped' if syslog_stat_result.stat.exists else ' file not found on the end point'}}" 
+
+- name: AD.1.2.3.2 - Creating {{ varLogSyslog }} if it does not exist (only for Debian Distribution)
+  file:
+   path: "{{ varLogSyslog }}"
+   state: touch
+   mode : "{{ varLogSyslogMode }}"
+  when: syslog_stat_result.stat.exists == false and ansible_os_family == "Debian" and create_syslog
+
+# AD.1.2.4.1 Task 43
+
+- stat:
+   path: "{{ varFailLogFile }}"
+  register: faillog_file_state
+
+- name: AD.1.2.4.1 - Display  '{{ varFailLogFile }}'  file status
+  debug: msg="{{ varFailLogFile }} {{ ' file found on the end point and the following task will be skipped' if faillog_file_state.stat.exists else ' file not found on the end point'}}" 
+
+
+- name: AD.1.2.4.1 - Creating {{ faillog }} if it does not exist
+  file:
+   path: "{{ varFailLogFile }}"
+   state: touch
+   mode : "{{ varFailLogFileMode }}"
+  when: faillog_file_state.stat.exists == false and create_faillog
+
+# AD.1.2.4.2 Task 44
+- stat:
+   path: "{{ tallylog }}"
+  register: taillog_file_state
+
+- name: AD.1.2.4.2 - Display  '{{ tallylog }}'  file status
+  debug: msg="{{ tallylog }} {{ ' file found on the end point and the following task will be skipped' if taillog_file_state.stat.exists else ' file not found on the end point'}}" 
+
+
+- name: AD.1.2.4.2 - Creating {{ tallylog }} if it does not exist
+  file:
+   path: "{{ tallylog }}"
+   state: touch
+   mode : "{{ tallylogMode }}"
+  when: taillog_file_state.stat.exists == false and create_tallylog
+
+# AD.1.2.5 - Task 45
+
+- stat:
+   path: "{{ varLogSecure }}"
+  register: secure_file_status
+
+- name: AD.1.2.5 - Display  '{{ varLogSecure }}'  file status
+  debug: msg="{{ varLogSecure }} {{ ' file found on the end point and the following task will be skipped' if secure_file_status.stat.exists else ' file not found on the end point'}}" 
+
+
+- name: AD.1.2.5 - Creating {{ varLogSecure }} if it does not exist (only for Non-Debian Distributions)
+  file:
+   path: "{{ varLogSecure }}"
+   state: touch
+   mode : "{{ varLogSecureMode }}"
+  when: secure_file_status.stat.exists == false and create_secure
+
+- stat:
+   path: "{{ auth }}"
+  register: auth_file_status
+
+- name: AD.1.2.5 - Display  '{{ auth }}'  file status
+  debug: msg="{{ auth }}' {{ 'file found on the end point and the following task will be skipped' if auth_file_status.stat.exists else ' file not found on the end point'}}" 
+
+
+- name: AD.1.2.5 - Creating {{ auth }} if it does not exist (only for Debian Distribution)
+  file:
+   path: "{{ auth }}"
+   state: touch
+   mode : "{{ authMode }}"
+  when: auth_file_status.stat.exists == false and ansible_os_family == "Debian" and create_auth_log
+
+# AD.1.2.1.1 task 35
+
+- name: Checking /etc/syslog.conf file status 
+  stat:
+   path: /etc/syslog.conf
+  register: syslog_file_stat
+
+
+- name: Display  /etc/syslog.conf file status
+  debug: msg="'/etc/syslog.conf' {{ 'file found on the end point' if syslog_file_stat.stat.exists else '  file not found on the end point, and the following tasks will be skipped'}}" 
+
+- name: AD.1.2.1.1 - Placing the line in /etc/syslog.info if the pattern matches
+  lineinfile:
+   dest: "{{ item.dest }}"
+   regexp: "{{ item.regexp }}"
+   line: "{{ item.line }}"
+  when: syslog_file_stat.stat.exists and set_syslog_conf #and ansible_os_family == "RedHat"
+  with_items:
+  - "{{syslog_conf}}"
+
+
+- name: AD.1.2.1.1 - Placing the line at EOF in /etc/syslog.info if the pattern doesn't match
+  lineinfile:
+   dest: "{{ item.dest }}"
+   line: "{{ item.line }}"
+  when: syslog_file_stat.stat.exists and set_syslog_conf #and ansible_os_family == "RedHat"
+  with_items:
+   - "{{syslog_conf}}"
+
+#task 36
+- name:  D.1.2.1.2 - Checking /etc/syslog-ng/syslog-ng.conf file status 
+  stat:
+   path: /etc/syslog-ng/syslog-ng.conf
+  register: syslog_ng_file_stat
+
+- name: Display /etc/syslog-ng/syslog-ng.conf file status
+  debug: msg=" '/etc/syslog-ng/syslog-ng.conf' {{ 'file found on the end point' if syslog_ng_file_stat.stat.exists else ' file not found on the end point, and the following tasks will be skipped'}}" 
+
+
+- name: AD.1.2.1.2 - Placing the line in /etc/syslog-ng/syslog-ng.conf if the pattern matches
+  lineinfile:
+   dest: "{{ item.dest }}"
+   regexp: "{{ item.regexp }}"
+   line: "{{ item.line }}"
+  when: syslog_ng_file_stat.stat.exists and set_syslog_ng
+  with_items:
+   - "{{syslog_ng}}"
+
+#AD.1.2.1.3 task 37
+- stat:
+   path: /etc/rsyslog.conf
+  register: rsyslog_file_stat
+
+
+- name: AD.1.2.1.3 - Display /etc/rsyslog.conf file status
+  debug: msg="'/etc/rsyslog.conf' {{ ' file found on the end point' if rsyslog_file_stat.stat.exists else ' file not found on the end point, and the following tasks will be skipped'}}" 
+
+
+- name: AD.1.2.1.3 - Placing the line in /etc/rsyslog.conf if the pattern matches
+  lineinfile:
+   dest: "{{ item.dest }}"
+   regexp: "{{ item.regexp }}"
+   line: "{{ item.line }}"
+  when: rsyslog_file_stat.stat.exists and set_rsyslog
+  with_items:
+   - "{{rsyslog}}"
+
+
+#AD.1.2.1.4 task 38
+
+- name: AD.1.2.1.4 - Placing the line in /etc/rsyslog.info if the pattern matches
+  lineinfile:
+   dest: "{{ item.dest }}"
+   regexp: "{{ item.regexp }}"
+   line: "{{ item.line }}"
+  when: rsyslog_file_stat.stat.exists and set_rsyslog_conf #and ansible_os_family == "RedHat" and ansible_lsb.major_release|int >= 5
+  with_items:
+   - "{{rsyslog_conf}}"
+
+
+- name: AD.1.2.1.4 - Placing the line at EOF in /etc/rsyslog.info if the pattern doesn't match
+  lineinfile:
+   dest: "{{ item.dest }}"
+   line: "{{ item.line }}"
+  when: rsyslog_file_stat.stat.exists and  set_rsyslog_conf #and ansible_os_family == "RedHat" and ansible_lsb.major_release|int >= 5
+  with_items:
+   - "{{rsyslog_conf}}"
+
+
+# AD.1.2.6 Task 46
+
+- stat:
+   path: "{{ logrotate }}"
+  register: logrotate_stat
+
+- name: AD.1.2.6 - Display logrotate file status
+  debug: msg="{{ 'logrotate file found on the end point' if logrotate_stat.stat.exists else 'logrotate file not found on the end point, and the following tasks will be skipped'}}" 
+
+
+- name: AD.1.2.6 - set_logrotate_format '{{set_logrotate_format}}' 
+  debug: msg="{{ 'setting logrotate format' if set_logrotate_format else 'skiping logrotate format setting as recommended hence skipping the following task '}}" 
+
+
+- name: AD.1.2.6 - Setting up the log retention time to weekly format in /etc/logrotate.conf
+  lineinfile:
+   dest: "{{ logrotate }}"
+   regexp: '^monthly|daily(.*)$'
+   backrefs: yes
+   line: "{{ logrotate_format }}"
+  when: logrotate_stat.stat.exists and set_logrotate_format
+
+
+- name: set_logrotate_format '{{set_logrotate_msg}}'
+  debug: msg="{{ 'setting logrotate message' if set_logrotate_msg else 'skiping logrotate message setting as recommended hence skipping the following task' }}"
+
+
+- name: AD.1.2.6 - Setting up the log retention time to 90 days in /etc/logrotate.conf
+  lineinfile:
+   dest: "{{ logrotate }}"
+   regexp: '^rotate(.*)$'
+   backrefs: yes
+   line: "{{ logrotate_msg }}"
+  when: logrotate_stat.stat.exists and set_logrotate_msg

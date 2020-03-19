@@ -1,0 +1,32 @@
+---
+
+# Include variable file
+- name: Include  global version variables
+  include_vars: "group_vars/kernel_update_input_vars.yml"
+
+- name: Copy rpm file to server
+  copy:
+     src: "{{ RPM_SOURC_DIR }}/{{ RPM_FILE }}"
+     dest: "{{ DESTINATION_DIR }}/{{ RPM_FILE }}"
+
+- name: Install package.
+  yum:
+     name: "{{ DESTINATION_DIR }}/{{ RPM_FILE }}"
+     state: present
+  register: installed_kernel
+
+- name: Set default kernel choice to the latest updated one.
+  lineinfile:
+    path: "{{ GRUB_PATH }}"
+    regexp: '^GRUB_DEFAULT='
+    line: 'GRUB_DEFAULT=0'
+  when: installed_kernel.changed
+
+- name: Re-generate GRUB configuration
+  shell: grub2-mkconfig -o /boot/grub2/grub.cfg
+  when: installed_kernel.changed
+  
+- name: Reboot the machine
+  reboot:
+    reboot_timeout: 1800
+  when: installed_kernel.changed

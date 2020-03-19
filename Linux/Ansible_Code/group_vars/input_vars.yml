@@ -1,0 +1,54 @@
+---
+binarySource: /etc/Ansible
+
+windows_binary_files:
+  bigFixBinaryexe: BigFix-BES-Client-9.2.5.130.exe
+  clientsettings_cfg: clientsettings.cfg
+  masthead_afxm: masthead.afxm
+
+
+#windows binary list
+windows_binary:
+  - { source: "{{binarySource}}/{{ windows_binary_files. bigFixBinaryexe}}" }
+  - { source: "{{binarySource}}/{{ windows_binary_files.clientsettings_cfg}}"}
+  - { source: "{{binarySource}}/{{ windows_binary_files.masthead_afxm}}" }
+
+windows_binary_dest: c:\temp\
+
+
+#Linux binary files name
+linux_binary_files:
+  bigFixBinaryrpm: BESAgent-9.2.5.130-rhe5.x86_64.rpm
+  besclient_Config: besclient.config
+  actionsite_afxm: actionsite.afxm
+
+
+#linux binary list
+linux_binary:
+  - { source: "{{binarySource}}/{{ linux_binary_files.bigFixBinaryrpm}}" }
+  - { source: "{{binarySource}}/{{ linux_binary_files.besclient_Config}}"}
+  - { source: "{{binarySource}}/{{ linux_binary_files.actionsite_afxm}}" }
+
+linux_binary_dest: /temp/
+
+#create install directories
+installDirectories:
+  varBESClient: /var/opt/BESClient
+  etcBESClient: /etc/opt/BESClient
+
+# install directory list
+installDirList:
+  - { directory: "{{ installDirectories.varBESClient}}" }
+  - { directory: "{{ installDirectories.etcBESClient }}"}
+
+installDirectoryMode: 755
+
+copy_besclient_config:  "cp -p {{ linux_binary_dest }}{{linux_binary_files.besclient_Config}} {{ installDirectories.varBESClient}}/{{linux_binary_files.besclient_Config}}"
+
+installBigFix: "rpm -ivh {{ linux_binary_dest }}{{linux_binary_files.bigFixBinaryrpm}}"
+
+copy_actionsite_afxm: "cp -p {{ linux_binary_dest }}{{linux_binary_files.actionsite_afxm}} {{ installDirectories.etcBESClient}}/{{linux_binary_files.actionsite_afxm}}"
+
+actionsiteafxmMode: 600
+
+besclientService: /etc/init.d/besclient

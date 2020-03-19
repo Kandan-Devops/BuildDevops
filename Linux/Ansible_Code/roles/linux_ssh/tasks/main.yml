@@ -1,0 +1,37 @@
+- name: Security As Code for Linux - SSH Configuration
+  debug:
+    msg:
+        - '- Implemented by:Richard D Chinnappan, Emin Asif Abdul Azeez, Abinas Sahoo'
+        - '- Reviewed by:Ashutosh Mishra'
+
+# Include global variables
+- name: Include Linux Security global variables for SSH settings
+  include_vars: environments/sla/group_vars/ssh_security_param.yml
+
+
+#Linux SSH Settings
+
+- name: Update Linux Security settings for ssh protecting resources
+  include_tasks: roles/linux_ssh/tasks/ssh_password_settings.yml
+  when: SSH_CONFIGURE_PASSWORD_PARAM_ISRUN  
+  tags: ssh_protecting_resources_settings
+
+
+- name: Update Linux Security settings for logging 
+  include_tasks: roles/linux_ssh/tasks/ssh_logging.yml
+  when: SSH_LOGGING_ISRUN  
+  tags: ssh_logging_settings
+
+
+
+- name: Update Linux Security settings for ssh protecting resources
+  include_tasks: roles/linux_ssh/tasks/ssh_protecting_resources.yml
+  when: SSH_PROTECTING_RESOURCES_ISRUN  
+  tags: ssh_protecting_resources_settings
+
+
+
+- name: Update Linux Security settings for network 
+  include_tasks: roles/linux_ssh/tasks/ssh_network.yml
+  when: SSH_NETWORK_CONF_ISRUN
+  tags: ssh_network_settings

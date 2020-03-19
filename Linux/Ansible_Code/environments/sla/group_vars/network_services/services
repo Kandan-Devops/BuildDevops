@@ -1,0 +1,26 @@
+#Disable services
+daytime
+systat
+netstat
+nfs-kernel-server
+chargen
+discard
+echo
+finger
+rwho
+rstatd
+tftp
+rwalld
+rusersd
+discard
+bootps
+sprayd
+pcnfsd
+cmsd
+dtspcd
+ttdbserver
+telnet
+vsftpd
+rexd
+nis
+

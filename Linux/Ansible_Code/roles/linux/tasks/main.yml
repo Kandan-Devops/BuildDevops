@@ -1,0 +1,31 @@
+- name: Security As Code for Linux 
+  debug:
+    msg:
+        - '- Implemented by:Richard D Chinnappan, Emin Asif Abdul Azeez, Abinas Sahoo'
+        - '- Reviewed by:Ashutosh Mishra'
+
+# Include global variables
+- name: Include Linux Security parameter variables file
+  include_vars: environments/sla/group_vars/security_param.yml
+
+- name: Include Password Security parameters update
+  include_tasks: roles/linux/tasks/configure_security_param.yml
+  when: CONFIGURE_PASSWORD_PARAM_ISRUN
+  tags: security_param_update
+
+- name: Include to protecting_resources
+  include_tasks: roles/linux/tasks/protecting_resources.yml
+  when: PROTECTING_RESOURCES_ISRUN
+  tags: security_param_update
+
+
+- name: Include to Network settings
+  include_tasks: roles/linux/tasks/network_conf.yml
+  when: NETWORK_CONF_ISRUN
+  tags: security_param_update
+
+
+- name: Include to Logging settings
+  include_tasks: roles/linux/tasks/logging.yml
+  when: LOGGING_ISRUN
+  tags: security_param_update
