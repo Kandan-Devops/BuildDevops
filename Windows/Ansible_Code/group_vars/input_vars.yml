@@ -1,0 +1,7 @@
+---
+bigFixbinarySource: /etc/Ansible/BigFix-BES-Client-9.2.5.130.exe
+destination: c:\temp\
+rdcmSource: /etc/ansible/rdcman.msi
+
+win_dns_one: 10.1.0.110
+win_dns_two: 8.8.8.8

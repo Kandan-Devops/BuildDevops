@@ -1,0 +1,66 @@
+---
+
+# Include  variables
+- name: Include input and out parameter variables file
+  include_vars: "group_vars/input_vars.yml"
+
+
+- name: Copy  BigFix-BES-Client-9.2.5.130.exe in to remote endpoint
+  win_copy:
+    src: '{{ bigFixbinarySource }}'
+    dest: '{{ destination }}' 
+
+- name: Copy  masthead.afxm in to remote endpoint C:\temp\
+  win_copy:
+    src: /etc/Ansible/masthead.afxm
+    dest: C:\temp\
+
+- name: Copy  clientsettings.cfg in to remote endpoint C:\temp\
+  win_copy:
+    src: /etc/Ansible/clientsettings.cfg
+    dest: C:\temp\
+
+- name: Install IEM BigFix Client
+  win_command: '{{ destination }}BigFix-BES-Client-9.2.5.130.exe  /S /v/qn'
+  register: output
+- debug: var=output
+
+
+#- name: Copy rdcman.msi binary in to remote endpoint
+#  win_copy:
+#    src: '{{ rdcmSource }}' #/etc/ansible/rdcman.msi
+#    dest: '{{ destination }}' #C:\temp\
+
+
+#- name: Install Remote Desktop Connection Manager on the endpoint
+#  win_package:
+#    path:  '{{ destination }}' # C:\temp\rdcman.msi
+#    state: present
+
+
+
+
+
+#- name: Copy  BESRemove9.2.5.130.exe in to remote endpoint C:\temp\
+#  win_copy:
+#    src: /etc/Ansible/BESRemove9.2.5.130.exe
+#    dest: C:\temp\
+
+
+#- name: Copy  clientsettings.cfg in to remote endpoint C:\temp\
+#  win_copy:
+#    src: /etc/Ansible/clientsettings.cfg
+#    dest: C:\temp\
+
+#- name: Copy  masthead.afxm in to remote endpoint C:\temp\
+#  win_copy:
+#    src: /etc/Ansible/masthead.afxm
+#    dest: C:\temp\
+
+
+#- name: Install IEM
+#  win_command: C:\temp\BESRemove9.2.5.130.exe
+#  register: output
+#- debug: var=output
+
+

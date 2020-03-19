@@ -1,0 +1,2 @@
+Start-Process -FilePath "winrm" -ArgumentList "set winrm/config/service @{AllowUnencrypted=`"false`"}" -Wait
+Start-Process -FilePath "winrm" -ArgumentList "set winrm/config/service/auth @{Basic=`"false`"}" -Wait

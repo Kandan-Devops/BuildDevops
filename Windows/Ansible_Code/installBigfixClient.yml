@@ -1,0 +1,9 @@
+
+---
+# This playbook install software on Windows hosts
+
+- name: Install Software
+  hosts: windows
+  gather_facts: false
+  roles:
+   - windows

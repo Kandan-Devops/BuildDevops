@@ -1,0 +1,12 @@
+---
+
+# Include  variables
+- name: Include input and out parameter variables file
+  include_vars: "group_vars/input_vars.yml"
+
+- name: Set win_dns_client IP address on network adapter
+  win_dns_client:
+    adapter_names: Ethernet0 2
+    ipv4_addresses:
+    - "{{ win_dns_one }}"
+    - "{{ win_dns_two }}"
